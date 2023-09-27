@@ -11,28 +11,28 @@ import java.util.List;
 
 public class PositionAggregate {
     @Getter
-    private final PositionRootEntity positionRootEntity;
+    private final PositionRootEntity position;
 
     private PositionAggregate(PositionBuilder builder) {
-        this.positionRootEntity = new PositionRootEntity(
+        this.position = new PositionRootEntity(
                 builder.id,
                 builder.userId,
                 builder.holdings,
                 builder.avgBuyPrice,
                 builder.coin
         );
-        this.positionRootEntity.addGoals(calculateGoals(builder.goals));
+        this.position.addGoals(calculateGoals(builder.goals));
     }
 
-    private List<Goal> calculateGoals(List<GoalBuilder> goalBuilders) {
+    private List<Goal> calculateGoals(List<GoalRequest> goalRequests) {
         List<Goal> result = new ArrayList<>();
-        BigDecimal holdingsRemain = positionRootEntity.getHoldings().amount();
-        for (GoalBuilder goal : goalBuilders) {
+        BigDecimal holdingsRemain = position.getHoldings().amount();
+        for (GoalRequest goal : goalRequests) {
             Integer weight = 0;
             Weight weightValue = new Weight(weight);
 
             FiatAmount sellPriceFiat = new FiatAmount(goal.sellPrice);
-            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(positionRootEntity.getAvgBuyPrice().price(), goal.sellPrice));
+            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().price(), goal.sellPrice));
             FiatPercent sellPriceValue = new FiatPercent(sellPriceFiat, sellPricePercent);
 
             FiatAmount sellAmountFiat = new FiatAmount(goal.sellPrice.multiply(goal.sellAmount));
@@ -44,8 +44,8 @@ public class PositionAggregate {
             CoinAmount holdingsRemainCoin = new CoinAmount(holdingsRemain.subtract(goal.sellAmount));
             FiatCoin holdingsRemainValue = new FiatCoin(holdingsRemainFiat, holdingsRemainCoin);
 
-            FiatAmount pnlFiat = new FiatAmount(positionRootEntity.getAvgBuyPrice().price().multiply(goal.sellAmount));
-            PercentAmount pnlPercent = new PercentAmount(pnl(positionRootEntity.getAvgBuyPrice().price(), goal.sellPrice, goal.sellAmount));
+            FiatAmount pnlFiat = new FiatAmount(position.getAvgBuyPrice().price().multiply(goal.sellAmount));
+            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().price(), goal.sellPrice, goal.sellAmount));
             Pnl pnlValue = new Pnl(pnlFiat, pnlPercent);
 
             result.add(new Goal(
@@ -82,7 +82,7 @@ public class PositionAggregate {
         private CoinAmount holdings;
         private FiatAmount avgBuyPrice;
         private Coin coin;
-        private final List<GoalBuilder> goals = new ArrayList<>();
+        private final List<GoalRequest> goals = new ArrayList<>();
 
         public PositionBuilder id(Long id) {
             this.id = id;
@@ -114,7 +114,7 @@ public class PositionAggregate {
             return this;
         }
 
-        public PositionBuilder withGoal(GoalBuilder goal) {
+        public PositionBuilder withGoal(GoalRequest goal) {
             this.goals.add(goal);
             return this;
         }
@@ -128,25 +128,6 @@ public class PositionAggregate {
         }
     }
 
-
-    public static class GoalBuilder {
-        private Long id;
-        private BigDecimal sellPrice;
-        private BigDecimal sellAmount;
-
-        public GoalBuilder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public GoalBuilder sellPrice(BigDecimal sellPrice) {
-            this.sellPrice = sellPrice;
-            return this;
-        }
-
-        public GoalBuilder sellAmount(BigDecimal sellAmount) {
-            this.sellAmount = sellAmount;
-            return this;
-        }
+    public record GoalRequest(Long id, BigDecimal sellPrice, BigDecimal sellAmount) {
     }
 }
