@@ -1,5 +1,6 @@
 package ru.lapotko.coingoal.core.aggregates.position;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.lapotko.coingoal.core.aggregates.valueobjects.CoinAmount;
 import ru.lapotko.coingoal.core.aggregates.valueobjects.FiatAmount;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Getter
 class PositionRootEntity {
     private final Long id;
 
