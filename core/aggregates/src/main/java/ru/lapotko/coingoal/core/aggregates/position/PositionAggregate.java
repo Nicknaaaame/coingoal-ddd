@@ -1,6 +1,5 @@
 package ru.lapotko.coingoal.core.aggregates.position;
 
-import lombok.Getter;
 import lombok.NonNull;
 import ru.lapotko.coingoal.core.aggregates.valueobjects.*;
 
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PositionAggregate {
-    @Getter
     private final PositionRootEntity position;
 
     private PositionAggregate(PositionBuilder builder) {
@@ -24,6 +22,10 @@ public class PositionAggregate {
         this.position.addGoals(calculateGoals(builder.goals));
     }
 
+    public PositionRootEntity calculatePosition() {
+        return position;
+    }
+
     private List<Goal> calculateGoals(List<GoalRequest> goalRequests) {
         List<Goal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
@@ -32,7 +34,7 @@ public class PositionAggregate {
             Weight weightValue = new Weight(weight);
 
             FiatAmount sellPriceFiat = new FiatAmount(goal.sellPrice);
-            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().price(), goal.sellPrice));
+            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), goal.sellPrice));
             FiatPercent sellPriceValue = new FiatPercent(sellPriceFiat, sellPricePercent);
 
             FiatAmount sellAmountFiat = new FiatAmount(goal.sellPrice.multiply(goal.sellAmount));
@@ -40,12 +42,13 @@ public class PositionAggregate {
             PercentAmount sellPercent = new PercentAmount(percent(holdingsRemain, goal.sellAmount));
             FiatCoinPercent sellAmountValue = new FiatCoinPercent(sellAmountFiat, sellAmountCoin, sellPercent);
 
-            FiatAmount holdingsRemainFiat = new FiatAmount(holdingsRemain.multiply(goal.sellPrice));
+            FiatAmount holdingsRemainFiat = new FiatAmount(holdingsRemain.subtract(goal.sellAmount).multiply(goal.sellPrice));
             CoinAmount holdingsRemainCoin = new CoinAmount(holdingsRemain.subtract(goal.sellAmount));
             FiatCoin holdingsRemainValue = new FiatCoin(holdingsRemainFiat, holdingsRemainCoin);
 
-            FiatAmount pnlFiat = new FiatAmount(position.getAvgBuyPrice().price().multiply(goal.sellAmount));
-            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().price(), goal.sellPrice, goal.sellAmount));
+            BigDecimal difference = goal.sellPrice.subtract(position.getAvgBuyPrice().fiat());
+            FiatAmount pnlFiat = new FiatAmount(difference.multiply(goal.sellAmount));
+            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().fiat(), goal.sellPrice, goal.sellAmount));
             Pnl pnlValue = new Pnl(pnlFiat, pnlPercent);
 
             result.add(new Goal(
@@ -123,7 +126,7 @@ public class PositionAggregate {
             if (coin == null)
                 throw new IllegalStateException("Coin cannot be null");
             if (avgBuyPrice == null)
-                throw new IllegalStateException("Avg buy price cannot be null");
+                throw new IllegalStateException("Avg buy fiat cannot be null");
             return new PositionAggregate(this);
         }
     }
