@@ -12,7 +12,7 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>aggregates</module>
+        <module>model</module>
     </modules>
 
 </project>
