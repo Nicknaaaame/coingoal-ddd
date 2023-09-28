@@ -29,9 +29,9 @@ public class PositionAggregate {
     private List<Goal> calculateGoals(List<GoalRequest> goalRequests) {
         List<Goal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
+        int weight = 0;
         for (GoalRequest goal : goalRequests) {
-            Integer weight = 0;
-            Weight weightValue = new Weight(weight);
+            Weight weightValue = new Weight(weight++);
 
             FiatAmount sellPriceFiat = new FiatAmount(goal.sellPrice);
             PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), goal.sellPrice));
