@@ -5,7 +5,6 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Getter
 public record CoinAmount(BigDecimal amount) {
     public CoinAmount {
         if (amount == null)
