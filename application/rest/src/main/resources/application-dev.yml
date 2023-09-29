@@ -1,0 +1,6 @@
+server:
+  port: 9090
+
+cors:
+  origin:
+    front: "http://localhost:4200"

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+
+external:
+  service:
+    coin-market-cap:
+      host: https://pro-api.coinmarketcap.com
+      coin-list-path: /v1/cryptocurrency/listings/latest
+      api-key-header: X-CMC_PRO_API_KEY
+      api-key: 36b88c18-f51d-482b-aff7-06608a266d2e

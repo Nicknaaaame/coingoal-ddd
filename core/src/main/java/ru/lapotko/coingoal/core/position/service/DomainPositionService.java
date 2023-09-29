@@ -1,11 +1,11 @@
 package ru.lapotko.coingoal.core.position.service;
 
 import lombok.RequiredArgsConstructor;
-import ru.lapotko.coingoal.core.position.Coin;
-import ru.lapotko.coingoal.core.position.PositionAggregate;
 import ru.lapotko.coingoal.core.position.repository.CoinRepository;
 import ru.lapotko.coingoal.core.position.repository.PositionRepository;
 import ru.lapotko.coingoal.core.position.request.PositionRequest;
+import ru.lapotko.coingoal.core.position.Coin;
+import ru.lapotko.coingoal.core.position.PositionAggregate;
 
 @RequiredArgsConstructor
 public class DomainPositionService {

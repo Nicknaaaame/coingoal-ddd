@@ -7,14 +7,13 @@
         <groupId>ru.lapotko</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.lapotko.coingoal</groupId>
-    <artifactId>application</artifactId>
+    <artifactId>infrastructure</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>rest</module>
+        <module>jpa</module>
     </modules>
 
     <properties>
