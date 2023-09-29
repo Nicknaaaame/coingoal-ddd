@@ -24,6 +24,9 @@ class PositionRootEntity {
 
     private final List<Goal> goals = new ArrayList<>();
 
+    void addGoal(Goal goal) {
+        this.goals.add(goal);
+    }
     void addGoals(List<Goal> goals) {
         this.goals.addAll(goals);
     }

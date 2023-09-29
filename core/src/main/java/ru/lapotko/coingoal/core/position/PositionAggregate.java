@@ -22,13 +22,36 @@ public class PositionAggregate {
         this.position.addGoals(builder.goals);
     }
 
+    public void addGoal(Goal goal) {
+        this.position.addGoal(goal);
+    }
+
+    public void removeGoal(Long goalId) {
+        this.position.getGoals().remove(getGoal(goalId));
+    }
+
+    public void updateGoal(Goal goal) {
+        Goal updated = getGoal(goal.getId());
+        updated.setSellAmount(goal.getSellAmount());
+        updated.setSellPrice(goal.getSellPrice());
+    }
+
+    private Goal getGoal(Long goalId) {
+        return this.position.getGoals().stream()
+                .filter(goal -> goal.getId().equals(goalId))
+                .findFirst()
+                .orElseThrow(() -> {
+                    throw new IllegalArgumentException("Goal with id [%s] not found".formatted(goalId));
+                });
+    }
+
     public List<CalculatedGoal> calculateGoals() {
         List<CalculatedGoal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
         int weight = 0;
         for (Goal goal : this.position.getGoals()) {
-            BigDecimal sellPrice = goal.sellPrice().fiat();
-            BigDecimal sellAmount = goal.sellAmount().amount();
+            BigDecimal sellPrice = goal.getSellPrice().fiat();
+            BigDecimal sellAmount = goal.getSellAmount().amount();
             Weight weightValue = new Weight(weight++);
 
             FiatAmount sellPriceFiat = new FiatAmount(sellPrice);
@@ -50,7 +73,7 @@ public class PositionAggregate {
             Pnl pnlValue = new Pnl(pnlFiat, pnlPercent);
 
             result.add(new CalculatedGoal(
-                    goal.id(),
+                    goal.getId(),
                     weightValue,
                     sellPriceValue,
                     sellAmountValue,
@@ -105,8 +128,14 @@ public class PositionAggregate {
             return this;
         }
 
-        public PositionBuilder withCoin(BigDecimal price, String name, String symbol, BigDecimal change24h) {
+        public PositionBuilder coin(Coin coin) {
+            this.coin = coin;
+            return this;
+        }
+
+        public PositionBuilder withCoin(Long id, BigDecimal price, String name, String symbol, BigDecimal change24h) {
             this.coin = new Coin(
+                    id,
                     new FiatAmount(price),
                     new CoinName(name),
                     new CoinSymbol(symbol),

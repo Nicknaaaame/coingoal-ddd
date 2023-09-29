@@ -5,5 +5,5 @@ import ru.lapotko.coingoal.core.valueobjects.CoinName;
 import ru.lapotko.coingoal.core.valueobjects.CoinSymbol;
 import ru.lapotko.coingoal.core.valueobjects.FiatAmount;
 
-record Coin(FiatAmount price, CoinName name, CoinSymbol symbol, Change change24h) {
+public record Coin(Long id, FiatAmount price, CoinName name, CoinSymbol symbol, Change change24h) {
 }

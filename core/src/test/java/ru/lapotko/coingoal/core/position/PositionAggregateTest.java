@@ -16,6 +16,7 @@ class PositionAggregateTest {
                 .holdings(BigDecimal.valueOf(100))
                 .userId("USER_TEST")
                 .withCoin(
+                        1L,
                         BigDecimal.valueOf(100),
                         "Bitcoin",
                         "BTC",
@@ -56,6 +57,7 @@ class PositionAggregateTest {
                 .holdings(BigDecimal.valueOf(100))
                 .userId("USER_TEST")
                 .withCoin(
+                        1L,
                         BigDecimal.valueOf(100),
                         "Bitcoin",
                         "BTC",
