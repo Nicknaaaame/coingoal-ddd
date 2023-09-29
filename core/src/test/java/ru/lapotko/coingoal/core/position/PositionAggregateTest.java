@@ -20,12 +20,12 @@ class PositionAggregateTest {
                         "Bitcoin",
                         "BTC",
                         BigDecimal.valueOf(1.1))
-                .withGoal(new PositionAggregate.GoalRequest(
+                .withGoal(new Goal(
                         1L,
-                        BigDecimal.valueOf(110),
-                        BigDecimal.valueOf(1)))
+                        new FiatAmount(BigDecimal.valueOf(110)),
+                        new CoinAmount(BigDecimal.valueOf(1))))
                 .build();
-        Goal goal = positionAggregate.calculatePosition().getGoals().get(0);
+        CalculatedGoal goal = positionAggregate.calculateGoals().get(0);
         Weight expectedWeight = new Weight(0);
         FiatPercent expectedSellPrice = new FiatPercent(
                 new FiatAmount(BigDecimal.valueOf(110)),
@@ -60,17 +60,17 @@ class PositionAggregateTest {
                         "Bitcoin",
                         "BTC",
                         BigDecimal.valueOf(1.1))
-                .withGoal(new PositionAggregate.GoalRequest(
+                .withGoal(new Goal(
                         1L,
-                        BigDecimal.valueOf(110),
-                        BigDecimal.valueOf(1)))
-                .withGoal(new PositionAggregate.GoalRequest(
+                        new FiatAmount(BigDecimal.valueOf(110)),
+                        new CoinAmount(BigDecimal.valueOf(1))))
+                .withGoal(new Goal(
                         2L,
-                        BigDecimal.valueOf(120),
-                        BigDecimal.valueOf(2)))
+                        new FiatAmount(BigDecimal.valueOf(120)),
+                        new CoinAmount(BigDecimal.valueOf(2))))
                 .build();
 
-        Goal goal = positionAggregate.calculatePosition().getGoals().get(1);
+        CalculatedGoal goal = positionAggregate.calculateGoals().get(1);
         Weight expectedWeight = new Weight(1);
         FiatPercent expectedSellPrice = new FiatPercent(
                 new FiatAmount(BigDecimal.valueOf(120)),
@@ -78,7 +78,7 @@ class PositionAggregateTest {
         FiatCoinPercent expectedSellAmount = new FiatCoinPercent(
                 new FiatAmount(BigDecimal.valueOf(240)),
                 new CoinAmount(BigDecimal.valueOf(2)),
-                new PercentAmount(BigDecimal.valueOf(3)));
+                new PercentAmount(BigDecimal.valueOf(2)));
         FiatCoin expectedHoldingsRemain = new FiatCoin(
                 new FiatAmount(BigDecimal.valueOf(11640)),
                 new CoinAmount(BigDecimal.valueOf(97)));

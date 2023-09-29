@@ -19,40 +19,38 @@ public class PositionAggregate {
                 builder.avgBuyPrice,
                 builder.coin
         );
-        this.position.addGoals(calculateGoals(builder.goals));
+        this.position.addGoals(builder.goals);
     }
 
-    public PositionRootEntity calculatePosition() {
-        return position;
-    }
-
-    private List<Goal> calculateGoals(List<GoalRequest> goalRequests) {
-        List<Goal> result = new ArrayList<>();
+    public List<CalculatedGoal> calculateGoals() {
+        List<CalculatedGoal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
         int weight = 0;
-        for (GoalRequest goal : goalRequests) {
+        for (Goal goal : this.position.getGoals()) {
+            BigDecimal sellPrice = goal.sellPrice().fiat();
+            BigDecimal sellAmount = goal.sellAmount().amount();
             Weight weightValue = new Weight(weight++);
 
-            FiatAmount sellPriceFiat = new FiatAmount(goal.sellPrice);
-            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), goal.sellPrice));
+            FiatAmount sellPriceFiat = new FiatAmount(sellPrice);
+            PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), sellPrice));
             FiatPercent sellPriceValue = new FiatPercent(sellPriceFiat, sellPricePercent);
 
-            FiatAmount sellAmountFiat = new FiatAmount(goal.sellPrice.multiply(goal.sellAmount));
-            CoinAmount sellAmountCoin = new CoinAmount(goal.sellAmount);
-            PercentAmount sellPercent = new PercentAmount(percent(holdingsRemain, goal.sellAmount));
+            FiatAmount sellAmountFiat = new FiatAmount(sellPrice.multiply(sellAmount));
+            CoinAmount sellAmountCoin = new CoinAmount(sellAmount);
+            PercentAmount sellPercent = new PercentAmount(percent(position.getHoldings().amount(), sellAmount));
             FiatCoinPercent sellAmountValue = new FiatCoinPercent(sellAmountFiat, sellAmountCoin, sellPercent);
 
-            FiatAmount holdingsRemainFiat = new FiatAmount(holdingsRemain.subtract(goal.sellAmount).multiply(goal.sellPrice));
-            CoinAmount holdingsRemainCoin = new CoinAmount(holdingsRemain.subtract(goal.sellAmount));
+            FiatAmount holdingsRemainFiat = new FiatAmount(holdingsRemain.subtract(sellAmount).multiply(sellPrice));
+            CoinAmount holdingsRemainCoin = new CoinAmount(holdingsRemain.subtract(sellAmount));
             FiatCoin holdingsRemainValue = new FiatCoin(holdingsRemainFiat, holdingsRemainCoin);
 
-            BigDecimal difference = goal.sellPrice.subtract(position.getAvgBuyPrice().fiat());
-            FiatAmount pnlFiat = new FiatAmount(difference.multiply(goal.sellAmount));
-            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().fiat(), goal.sellPrice, goal.sellAmount));
+            BigDecimal difference = sellPrice.subtract(position.getAvgBuyPrice().fiat());
+            FiatAmount pnlFiat = new FiatAmount(difference.multiply(sellAmount));
+            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().fiat(), sellPrice, sellAmount));
             Pnl pnlValue = new Pnl(pnlFiat, pnlPercent);
 
-            result.add(new Goal(
-                    goal.id,
+            result.add(new CalculatedGoal(
+                    goal.id(),
                     weightValue,
                     sellPriceValue,
                     sellAmountValue,
@@ -60,7 +58,7 @@ public class PositionAggregate {
                     pnlValue
             ));
 
-            holdingsRemain = holdingsRemain.subtract(goal.sellAmount);
+            holdingsRemain = holdingsRemain.subtract(sellAmount);
         }
         return result;
     }
@@ -85,7 +83,7 @@ public class PositionAggregate {
         private CoinAmount holdings;
         private FiatAmount avgBuyPrice;
         private Coin coin;
-        private final List<GoalRequest> goals = new ArrayList<>();
+        private final List<Goal> goals = new ArrayList<>();
 
         public PositionBuilder id(Long id) {
             this.id = id;
@@ -117,7 +115,7 @@ public class PositionAggregate {
             return this;
         }
 
-        public PositionBuilder withGoal(GoalRequest goal) {
+        public PositionBuilder withGoal(Goal goal) {
             this.goals.add(goal);
             return this;
         }
@@ -129,8 +127,5 @@ public class PositionAggregate {
                 throw new IllegalStateException("Avg buy fiat cannot be null");
             return new PositionAggregate(this);
         }
-    }
-
-    public record GoalRequest(Long id, BigDecimal sellPrice, BigDecimal sellAmount) {
     }
 }

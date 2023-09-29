@@ -1,7 +1,7 @@
 package ru.lapotko.coingoal.core.position;
 
-import ru.lapotko.coingoal.core.valueobjects.*;
+import ru.lapotko.coingoal.core.valueobjects.CoinAmount;
+import ru.lapotko.coingoal.core.valueobjects.FiatAmount;
 
-record Goal(Long id, Weight weight, FiatPercent sellPrice, FiatCoinPercent sellAmount, FiatCoin holdingsRemain,
-            Pnl pnl) {
+record Goal (Long id, FiatAmount sellPrice, CoinAmount sellAmount) {
 }
