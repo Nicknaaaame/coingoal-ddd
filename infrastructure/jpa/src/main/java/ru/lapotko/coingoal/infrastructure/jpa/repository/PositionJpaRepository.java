@@ -17,6 +17,7 @@ public interface PositionJpaRepository extends JpaRepository<PositionEntity, Lon
     Page<PositionEntity> findAll(@NonNull Predicate predicate, @NonNull Pageable pageable);
 
     @Override
+    @NonNull
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"coin", "goals"})
-    Optional<PositionEntity> findById(Long id);
+    Optional<PositionEntity> findById(@NonNull Long id);
 }
