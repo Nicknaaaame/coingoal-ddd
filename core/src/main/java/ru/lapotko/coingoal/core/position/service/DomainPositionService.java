@@ -1,6 +1,8 @@
 package ru.lapotko.coingoal.core.position.service;
 
 import lombok.RequiredArgsConstructor;
+import ru.lapotko.coingoal.core.exception.CoinNotFoundException;
+import ru.lapotko.coingoal.core.exception.PositionNotFoundException;
 import ru.lapotko.coingoal.core.position.repository.CoinRepository;
 import ru.lapotko.coingoal.core.position.repository.PositionRepository;
 import ru.lapotko.coingoal.core.position.request.PositionRequest;
@@ -32,13 +34,13 @@ public class DomainPositionService {
 
     public PositionAggregate getPosition(Long positionId) {
         return positionRepository.findPositionById(positionId).orElseThrow(() -> {
-            throw new IllegalArgumentException("Position with id [%s] not found".formatted(positionId));
+            throw new PositionNotFoundException(positionId);
         });
     }
 
     private Coin getCoin(Long coinId) {
         return coinRepository.findCoinById(coinId).orElseThrow(() -> {
-            throw new IllegalArgumentException("Coin with id [%s] not found".formatted(coinId));
+            throw new CoinNotFoundException(coinId);
         });
     }
 }

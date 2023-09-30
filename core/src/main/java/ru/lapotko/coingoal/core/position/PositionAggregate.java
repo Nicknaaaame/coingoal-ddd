@@ -1,6 +1,7 @@
 package ru.lapotko.coingoal.core.position;
 
 import lombok.NonNull;
+import ru.lapotko.coingoal.core.exception.GoalNotFoundException;
 import ru.lapotko.coingoal.core.valueobjects.*;
 
 import java.math.BigDecimal;
@@ -41,7 +42,7 @@ public class PositionAggregate {
                 .filter(goal -> goal.getId().equals(goalId))
                 .findFirst()
                 .orElseThrow(() -> {
-                    throw new IllegalArgumentException("Goal with id [%s] not found".formatted(goalId));
+                    throw new GoalNotFoundException(goalId);
                 });
     }
 

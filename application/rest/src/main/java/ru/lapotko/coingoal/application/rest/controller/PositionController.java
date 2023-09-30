@@ -1,15 +1,23 @@
 package ru.lapotko.coingoal.application.rest.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
+import ru.lapotko.coingoal.core.position.service.DomainPositionService;
+import ru.lapotko.coingoal.infrastructure.jpa.PositionDomainRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
 
 @RestController
 @RequestMapping("/api/v1/position")
 @RequiredArgsConstructor
 public class PositionController {
-    /*private final PositionService positionService;
+    /*private final DomainPositionService positionService;
     private final CoinGoalMapper mapper = new CoinGoalMapper();
-    private final PositionCalculator positionCalculator = new PositionCalculator();
 
     @GetMapping
     public ResponseEntity<Page<PositionResponse>> getPositionPage(
@@ -25,9 +33,9 @@ public class PositionController {
                         .build())
                 .build();
         return ResponseEntity.ok(positionService.getPositionResponsePage(filter, pageable));
-    }
+    }*/
 
-    @GetMapping("/{positionId}")
+    /*@GetMapping("/{positionId}")
     public ResponseEntity<PositionResponse> getPositionById(@PathVariable Long positionId) {
         return ResponseEntity.ok(positionCalculator.calculate(positionService.getPositionById(positionId)));
     }
