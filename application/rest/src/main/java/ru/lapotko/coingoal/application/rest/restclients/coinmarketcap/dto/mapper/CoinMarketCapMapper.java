@@ -1,7 +1,7 @@
 package ru.lapotko.coingoal.application.rest.restclients.coinmarketcap.dto.mapper;
 
-import ru.lapotko.coingoal.application.rest.dto.CoinDto;
 import ru.lapotko.coingoal.application.rest.restclients.coinmarketcap.dto.CoinListing;
+import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
 
 public class CoinMarketCapMapper {
     private static final String QUOTE_USD = "USD";

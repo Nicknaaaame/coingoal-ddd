@@ -1,6 +1,7 @@
 package ru.lapotko.coingoal.application.rest.restclients;
 
-import ru.lapotko.coingoal.application.rest.dto.CoinDto;
+
+import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
 
 import java.util.List;
 
