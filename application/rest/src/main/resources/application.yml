@@ -1,3 +1,6 @@
+logging:
+  level:
+    org.springframework.boot.loader: DEBUG
 spring:
   profiles:
     active: dev

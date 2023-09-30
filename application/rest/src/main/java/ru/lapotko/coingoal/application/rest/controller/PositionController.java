@@ -1,6 +1,5 @@
 package ru.lapotko.coingoal.application.rest.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +50,6 @@ public class PositionController {
 
     @PostMapping
     public ResponseEntity<Long> createPosition(
-            @Valid
             @RequestBody
             PositionCreate request) {
         PositionAggregate position = domainPositionService.createPosition(request);
@@ -66,7 +64,6 @@ public class PositionController {
 
     @PatchMapping
     public ResponseEntity<PositionResponse> patchPosition(
-            @Valid
             @RequestBody
             PositionUpdate request) {
         return ResponseEntity.ok(positionMapper.toPositionResponse(domainPositionService.updatePosition(request)));
