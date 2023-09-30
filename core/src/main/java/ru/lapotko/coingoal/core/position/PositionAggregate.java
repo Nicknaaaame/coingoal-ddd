@@ -8,9 +8,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PositionAggregate {
     private final PositionRootEntity position;
+
+    private transient List<CalculatedGoal> cachedCalculatedGoals;
 
     private PositionAggregate(PositionBuilder builder) {
         this.position = new PositionRootEntity(
@@ -45,16 +48,19 @@ public class PositionAggregate {
 
     public void addGoal(Goal goal) {
         this.position.addGoal(goal);
+        cachedCalculatedGoals = null;
     }
 
     public void removeGoal(Long goalId) {
         this.position.getGoals().remove(getGoal(goalId));
+        cachedCalculatedGoals = null;
     }
 
     public void updateGoal(Goal goal) {
         Goal updated = getGoal(goal.getId());
         updated.setSellAmount(goal.getSellAmount());
         updated.setSellPrice(goal.getSellPrice());
+        cachedCalculatedGoals = null;
     }
 
     private Goal getGoal(Long goalId) {
@@ -67,6 +73,9 @@ public class PositionAggregate {
     }
 
     public List<CalculatedGoal> calculateGoals() {
+        if (cachedCalculatedGoals != null)
+            return cachedCalculatedGoals;
+
         List<CalculatedGoal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
         int weight = 0;
@@ -104,11 +113,26 @@ public class PositionAggregate {
 
             holdingsRemain = holdingsRemain.subtract(sellAmount);
         }
+        cachedCalculatedGoals = result;
         return result;
     }
 
     public Pnl calculatePnl() {
-        return null;
+        if (cachedCalculatedGoals == null)
+            cachedCalculatedGoals = calculateGoals();
+        Optional<BigDecimal> fiatSum = cachedCalculatedGoals.stream()
+                .map(goal -> goal.pnl().fiatAmount().fiat())
+                .reduce(BigDecimal::add);
+
+        Optional<BigDecimal> percentSum = cachedCalculatedGoals.stream()
+                .map(goal -> goal.pnl().percent().percent())
+                .reduce(BigDecimal::add);
+
+        return fiatSum.map(bigDecimal -> new Pnl(
+                        new FiatAmount(bigDecimal),
+                        new PercentAmount(percentSum.get())))
+                .orElse(null);
+
     }
 
     private BigDecimal pnl(BigDecimal entryPrice, BigDecimal exitPrice, BigDecimal amount) {
