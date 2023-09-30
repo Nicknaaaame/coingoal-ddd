@@ -23,6 +23,26 @@ public class PositionAggregate {
         this.position.addGoals(builder.goals);
     }
 
+    public Long getId() {
+        return position.getId();
+    }
+
+    public UserId getUserId() {
+        return position.getUserId();
+    }
+
+    public CoinAmount currentHoldings() {
+        return position.getHoldings();
+    }
+
+    public FiatAmount getAvgBuyPrice() {
+        return position.getAvgBuyPrice();
+    }
+
+    public Coin getCoin() {
+        return position.getCoin();
+    }
+
     public void addGoal(Goal goal) {
         this.position.addGoal(goal);
     }
@@ -85,6 +105,10 @@ public class PositionAggregate {
             holdingsRemain = holdingsRemain.subtract(sellAmount);
         }
         return result;
+    }
+
+    public Pnl calculatePnl() {
+        return null;
     }
 
     private BigDecimal pnl(BigDecimal entryPrice, BigDecimal exitPrice, BigDecimal amount) {

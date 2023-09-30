@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.lapotko.coingoal.application.rest.dto.value.FiatCoinValue;
-import ru.lapotko.coingoal.application.rest.dto.value.PnlValue;
-import ru.lapotko.coingoal.core.position.Goal;
-import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
+import ru.lapotko.coingoal.core.position.CalculatedGoal;
+import ru.lapotko.coingoal.core.position.Coin;
+import ru.lapotko.coingoal.core.valueobjects.CoinAmount;
+import ru.lapotko.coingoal.core.valueobjects.FiatAmount;
+import ru.lapotko.coingoal.core.valueobjects.Pnl;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -18,9 +18,9 @@ import java.util.List;
 @Builder
 public class PositionResponse {
     private Long id;
-    private CoinDto coin;
-    private FiatCoinValue holdings;
-    private BigDecimal avgBuyPrice;
-    private List<Goal> goals;
-    private PnlValue totalProfit;
+    private Coin coin;
+    private CoinAmount holdings;
+    private FiatAmount avgBuyPrice;
+    private List<CalculatedGoal> goals;
+    private Pnl totalProfit;
 }

@@ -2,11 +2,13 @@ package ru.lapotko.coingoal.infrastructure.jpa.util;
 
 import org.springframework.data.domain.*;
 import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
+import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.*;
 import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class ConvertUtil {
     }
 
     public static Pageable convertToPageable(PageableInfo pageableInfo) {
-        return (Pageable) PageRequest.of(
+        return PageRequest.of(
                 pageableInfo.getPage(),
                 pageableInfo.getSize(),
                 convertToSort(pageableInfo.getSort()));
@@ -80,5 +82,17 @@ public class ConvertUtil {
                 coinDto.getSymbol(),
                 coinDto.getChange24h()
         );
+    }
+
+    public static PositionFilter convertToPositionFilter(PositionFilterInfo filterInfo) {
+        return PositionFilter.builder()
+                .coinFilter(convertToCoinFilter(filterInfo.getCoinFilter()))
+                .build();
+    }
+
+    public static PositionFilterInfo convertToPositionFilter(PositionFilter filter) {
+        return PositionFilterInfo.builder()
+                .coinFilter(convertToCoinFilterInfo(filter.getCoinFilter()))
+                .build();
     }
 }
