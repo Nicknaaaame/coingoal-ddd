@@ -1,14 +1,17 @@
 package ru.lapotko.coingoal.application.rest.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
-import ru.lapotko.coingoal.application.rest.service.PositionService;
+import ru.lapotko.coingoal.application.rest.service.PositionMapper;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
+import ru.lapotko.coingoal.core.position.request.PositionCreate;
+import ru.lapotko.coingoal.core.position.request.PositionUpdate;
 import ru.lapotko.coingoal.core.position.service.DomainPositionService;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
@@ -19,7 +22,7 @@ import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 @RequiredArgsConstructor
 public class PositionController {
     private final DomainPositionService domainPositionService;
-    private final PositionService positionService;
+    private final PositionMapper positionMapper;
 
     @GetMapping
     public ResponseEntity<Page<PositionResponse>> getPositionPage(
@@ -38,26 +41,26 @@ public class PositionController {
                 ConvertUtil.convertToPositionFilter(filter),
                 ConvertUtil.convertToPageableInfo(pageable));
         Page<PositionAggregate> positionPage = ConvertUtil.convertToPage(positionPageInfo, pageable);
-        return ResponseEntity.ok(positionPage.map(positionService::getPositionResponse));
+        return ResponseEntity.ok(positionPage.map(positionMapper::toPositionResponse));
     }
 
-    /*@GetMapping("/{positionId}")
+    @GetMapping("/{positionId}")
     public ResponseEntity<PositionResponse> getPositionById(@PathVariable Long positionId) {
-        return ResponseEntity.ok(positionCalculator.calculate(positionService.getPositionById(positionId)));
+        return ResponseEntity.ok(positionMapper.toPositionResponse(domainPositionService.getPosition(positionId)));
     }
 
     @PostMapping
     public ResponseEntity<Long> createPosition(
             @Valid
             @RequestBody
-            PositionRequest request) {
-        Position position = positionService.createPosition(request);
+            PositionCreate request) {
+        PositionAggregate position = domainPositionService.createPosition(request);
         return ResponseEntity.ok(position.getId());
     }
 
     @DeleteMapping("/{positionId}")
     public ResponseEntity<Void> deletePosition(@PathVariable Long positionId) {
-        positionService.deletePosition(positionId);
+        domainPositionService.deletePosition(positionId);
         return ResponseEntity.ok().build();
     }
 
@@ -65,11 +68,11 @@ public class PositionController {
     public ResponseEntity<PositionResponse> patchPosition(
             @Valid
             @RequestBody
-            PositionPatch request) {
-        return ResponseEntity.ok(positionCalculator.calculate(positionService.patchPosition(request)));
+            PositionUpdate request) {
+        return ResponseEntity.ok(positionMapper.toPositionResponse(domainPositionService.updatePosition(request)));
     }
 
-    @PostMapping("/{positionId}/goal")
+    /*@PostMapping("/{positionId}/goal")
     public ResponseEntity<Long> createGoal(
             @Valid @RequestBody GoalRequest request,
             @PathVariable Long positionId) {

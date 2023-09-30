@@ -30,10 +30,6 @@ public class PositionAggregate {
         return position.getId();
     }
 
-    public UserId getUserId() {
-        return position.getUserId();
-    }
-
     public CoinAmount currentHoldings() {
         return position.getHoldings();
     }
@@ -64,6 +60,16 @@ public class PositionAggregate {
         Goal updated = getGoal(goal.getId());
         updated.setSellAmount(goal.getSellAmount());
         updated.setSellPrice(goal.getSellPrice());
+        cachedCalculatedGoals = null;
+    }
+
+    public void updateAvgBuyPrice(BigDecimal avgBuyPrice) {
+        this.position.setAvgBuyPrice(new FiatAmount(avgBuyPrice));
+        cachedCalculatedGoals = null;
+    }
+
+    public void updateHoldings(BigDecimal holdings) {
+        this.position.setHoldings(new CoinAmount(holdings));
         cachedCalculatedGoals = null;
     }
 

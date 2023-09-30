@@ -1,26 +1,21 @@
 package ru.lapotko.coingoal.infrastructure.jpa;
 
-import javafx.geometry.Pos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lapotko.coingoal.core.exception.CoinNotFoundException;
 import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
-import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.core.position.Goal;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 import ru.lapotko.coingoal.core.position.repository.PositionRepository;
-import ru.lapotko.coingoal.core.position.request.PositionRequest;
-import ru.lapotko.coingoal.core.position.service.DomainCoinService;
+import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.PositionEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.CoinJpaRepository;
 import ru.lapotko.coingoal.infrastructure.jpa.repository.GoalJpaRepository;
 import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionJpaRepository;
 import ru.lapotko.coingoal.infrastructure.jpa.service.PositionJpaService;
@@ -28,7 +23,6 @@ import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -40,7 +34,7 @@ public class PositionDomainRepository implements PositionRepository {
     private final GoalJpaRepository goalJpaRepository;
     @Override
     @Transactional(isolation = Isolation.DEFAULT)
-    public PositionAggregate createPosition(PositionRequest positionRequest) {
+    public PositionAggregate createPosition(PositionCreate positionRequest) {
         PositionEntity positionEntity = new PositionEntity();
         positionEntity.setUserId("ADMIN_USER");
         positionEntity.setAvgBuyPrice(positionRequest.avgBuyPrice());
@@ -79,5 +73,10 @@ public class PositionDomainRepository implements PositionRepository {
         Pageable pageable = ConvertUtil.convertToPageable(pageableInfo);
         Page<PositionEntity> page = positionJpaRepository.findAll(filter.getFilter(), pageable);
         return ConvertUtil.convertToPageInfo(page.map(PositionEntity::toDomain));
+    }
+
+    @Override
+    public void deletePosition(Long id) {
+        positionJpaRepository.delete(positionJpaService.getPosition(id));
     }
 }

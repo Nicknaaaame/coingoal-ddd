@@ -8,9 +8,14 @@ import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.repository.CoinRepository;
 import ru.lapotko.coingoal.core.position.repository.PositionRepository;
-import ru.lapotko.coingoal.core.position.request.PositionRequest;
+import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
+import ru.lapotko.coingoal.core.position.request.PositionUpdate;
+
+import javax.swing.text.Position;
+
+import static java.util.Optional.ofNullable;
 
 @RequiredArgsConstructor
 public class DomainPositionService {
@@ -18,11 +23,14 @@ public class DomainPositionService {
     private final PositionRepository positionRepository;
     private final CoinRepository coinRepository;
 
-    public PositionAggregate createPosition(PositionRequest request) {
+    public PositionAggregate createPosition(PositionCreate request) {
         return positionRepository.createPosition(request);
     }
 
-    public PositionAggregate savePosition(PositionAggregate positionAggregate) {
+    public PositionAggregate updatePosition(PositionUpdate request) {
+        PositionAggregate positionAggregate = getPosition(request.positionId());
+        ofNullable(request.avgBuyPrice()).ifPresent(avgBuyPrice -> positionAggregate.updateAvgBuyPrice(avgBuyPrice.orElse(null)));
+        ofNullable(request.holdings()).ifPresent(holdings -> positionAggregate.updateHoldings(holdings.orElse(null)));
         positionRepository.savePosition(positionAggregate);
         return positionAggregate;
     }
@@ -35,6 +43,10 @@ public class DomainPositionService {
         return positionRepository.findPositionById(positionId).orElseThrow(() -> {
             throw new PositionNotFoundException(positionId);
         });
+    }
+
+    public void deletePosition(Long positionId) {
+        positionRepository.deletePosition(positionId);
     }
 
     private Coin getCoin(Long coinId) {

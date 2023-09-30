@@ -5,8 +5,8 @@ import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 
 @Service
-public class PositionService {
-    public PositionResponse getPositionResponse(PositionAggregate positionAggregate) {
+public class PositionMapper {
+    public PositionResponse toPositionResponse(PositionAggregate positionAggregate) {
         return PositionResponse.builder()
                 .id(positionAggregate.getId())
                 .avgBuyPrice(positionAggregate.getAvgBuyPrice())

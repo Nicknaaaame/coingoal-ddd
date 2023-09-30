@@ -1,5 +1,6 @@
 package ru.lapotko.coingoal.core.position;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.lapotko.coingoal.core.valueobjects.CoinAmount;
@@ -9,16 +10,16 @@ import ru.lapotko.coingoal.core.valueobjects.UserId;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 class PositionRootEntity {
     private final Long id;
 
     private final UserId userId;
 
-    private final CoinAmount holdings;
+    private CoinAmount holdings;
 
-    private final FiatAmount avgBuyPrice;
+    private FiatAmount avgBuyPrice;
 
     private final Coin coin;
 
@@ -29,5 +30,13 @@ class PositionRootEntity {
     }
     void addGoals(List<Goal> goals) {
         this.goals.addAll(goals);
+    }
+
+    public void setHoldings(CoinAmount holdings) {
+        this.holdings = holdings;
+    }
+
+    public void setAvgBuyPrice(FiatAmount avgBuyPrice) {
+        this.avgBuyPrice = avgBuyPrice;
     }
 }
