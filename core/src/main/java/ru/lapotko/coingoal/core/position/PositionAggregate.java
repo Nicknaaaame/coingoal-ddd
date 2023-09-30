@@ -46,6 +46,10 @@ public class PositionAggregate {
         return position.getCoin();
     }
 
+    public List<Goal> getGoalDefinitions() {
+        return position.getGoals();
+    }
+
     public void addGoal(Goal goal) {
         this.position.addGoal(goal);
         cachedCalculatedGoals = null;

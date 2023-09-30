@@ -2,6 +2,7 @@ package ru.lapotko.coingoal.infrastructure.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.lapotko.coingoal.core.position.PositionAggregate;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,4 +34,14 @@ public class PositionEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "position")
     private List<GoalEntity> goals;
+
+    public PositionAggregate toDomain() {
+        return new PositionAggregate.PositionBuilder()
+                .id(this.getId())
+                .avgBuyPrice(this.getAvgBuyPrice())
+                .holdings(this.getHoldings())
+                .userId(this.getUserId())
+                .coin(coin.toDomain())
+                .build();
+    }
 }

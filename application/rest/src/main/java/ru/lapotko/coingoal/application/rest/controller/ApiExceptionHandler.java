@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import ru.lapotko.coingoal.application.rest.exception.CoinGoalApiException;
 import ru.lapotko.coingoal.application.rest.dto.ErrorDetails;
 import ru.lapotko.coingoal.core.exception.DomainCoreException;
 import ru.lapotko.coingoal.core.exception.DomainNotFoundException;

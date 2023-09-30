@@ -19,15 +19,7 @@ public class DomainPositionService {
     private final CoinRepository coinRepository;
 
     public PositionAggregate createPosition(PositionRequest request) {
-        PositionAggregate positionAggregate = new PositionAggregate.PositionBuilder()
-                .id(request.id())
-                .avgBuyPrice(request.avgBuyPrice())
-                .holdings(request.holdings())
-                .userId(request.userId())
-                .coin(getCoin(request.coinId()))
-                .build();
-        positionRepository.savePosition(positionAggregate);
-        return positionAggregate;
+        return positionRepository.createPosition(request);
     }
 
     public PositionAggregate savePosition(PositionAggregate positionAggregate) {
