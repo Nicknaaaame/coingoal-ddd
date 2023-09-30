@@ -4,20 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.lapotko.coingoal.core.exception.PositionNotFoundException;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.PositionEntity;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionJpaRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionEntityRepository;
 
 @Service
 @RequiredArgsConstructor
-public class PositionJpaService {
+public class PositionEntityService {
 
-    private final PositionJpaRepository positionJpaRepository;
+    private final PositionEntityRepository positionEntityRepository;
 
     public void savePosition(PositionEntity positionEntity) {
-        positionJpaRepository.save(positionEntity);
+        positionEntityRepository.save(positionEntity);
     }
 
     public PositionEntity getPosition(Long id) {
-        return positionJpaRepository.findById(id).orElseThrow(() -> {
+        return positionEntityRepository.findById(id).orElseThrow(() -> {
             throw new PositionNotFoundException(id);
         });
     }

@@ -9,7 +9,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.CoinJpaRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.repository.CoinEntityRepository;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Log4j2
 public class DbCoinSetupCommand implements ApplicationRunner {
-    private final CoinJpaRepository coinRepository;
+    private final CoinEntityRepository coinRepository;
     private final ObjectMapper jsonMapper = new ObjectMapper();
 
     {
@@ -58,8 +58,9 @@ public class DbCoinSetupCommand implements ApplicationRunner {
     }
 
     public String getImportFilePath() {
-        return  "db_setup/coin_list_5000.json";
+        return "db_setup/coin_list_5000.json";
     }
+
     private List<CoinDto> getData() throws IOException {
         String importFile = getImportFilePath();
         try (InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(importFile)) {

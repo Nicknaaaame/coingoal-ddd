@@ -5,6 +5,6 @@ import ru.lapotko.coingoal.infrastructure.jpa.entity.GoalEntity;
 
 import java.util.Optional;
 
-public interface GoalJpaRepository extends JpaRepository<GoalEntity, Long> {
+public interface GoalEntityRepository extends JpaRepository<GoalEntity, Long> {
     Optional<GoalEntity> findTopByPositionIdOrderByWeightDesc(Long positionId);
 }

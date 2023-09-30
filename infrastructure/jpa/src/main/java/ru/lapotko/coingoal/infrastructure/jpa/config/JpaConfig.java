@@ -10,9 +10,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import ru.lapotko.coingoal.core.position.repository.CoinRepository;
-import ru.lapotko.coingoal.core.position.repository.PositionRepository;
-import ru.lapotko.coingoal.core.position.service.DomainPositionService;
+import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
+import ru.lapotko.coingoal.core.position.repository.PositionDomainRepository;
+import ru.lapotko.coingoal.core.position.service.PositionDomainService;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -22,10 +22,10 @@ import java.util.Properties;
 @EnableJpaRepositories("ru.lapotko.coingoal.infrastructure.jpa.repository")
 public class JpaConfig {
     @Bean
-    public DomainPositionService domainPositionService(
-            PositionRepository positionRepository,
-            CoinRepository coinRepository) {
-        return new DomainPositionService(positionRepository, coinRepository);
+    public PositionDomainService domainPositionService(
+            PositionDomainRepository positionDomainRepository,
+            CoinDomainRepository coinDomainRepository) {
+        return new PositionDomainService(positionDomainRepository, coinDomainRepository);
     }
 
     @Bean

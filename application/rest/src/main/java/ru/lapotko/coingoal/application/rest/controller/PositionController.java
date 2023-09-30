@@ -6,12 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
-import ru.lapotko.coingoal.application.rest.service.PositionMapper;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
-import ru.lapotko.coingoal.core.position.service.DomainPositionService;
+import ru.lapotko.coingoal.core.position.service.PositionDomainService;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
@@ -20,8 +19,7 @@ import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 @RequestMapping("/api/v1/position")
 @RequiredArgsConstructor
 public class PositionController {
-    private final DomainPositionService domainPositionService;
-    private final PositionMapper positionMapper;
+    private final PositionDomainService positionDomainService;
 
     @GetMapping
     public ResponseEntity<Page<PositionResponse>> getPositionPage(
@@ -36,29 +34,29 @@ public class PositionController {
                         .symbol(coinSymbol)
                         .build())
                 .build();
-        PageInfo<PositionAggregate> positionPageInfo = domainPositionService.getPositionPage(
+        PageInfo<PositionAggregate> positionPageInfo = positionDomainService.getPositionPage(
                 ConvertUtil.convertToPositionFilter(filter),
                 ConvertUtil.convertToPageableInfo(pageable));
         Page<PositionAggregate> positionPage = ConvertUtil.convertToPage(positionPageInfo, pageable);
-        return ResponseEntity.ok(positionPage.map(positionMapper::toPositionResponse));
+        return ResponseEntity.ok(positionPage.map(this::toPositionResponse));
     }
 
     @GetMapping("/{positionId}")
     public ResponseEntity<PositionResponse> getPositionById(@PathVariable Long positionId) {
-        return ResponseEntity.ok(positionMapper.toPositionResponse(domainPositionService.getPosition(positionId)));
+        return ResponseEntity.ok(toPositionResponse(positionDomainService.getPosition(positionId)));
     }
 
     @PostMapping
     public ResponseEntity<Long> createPosition(
             @RequestBody
             PositionCreate request) {
-        PositionAggregate position = domainPositionService.createPosition(request);
+        PositionAggregate position = positionDomainService.createPosition(request);
         return ResponseEntity.ok(position.getId());
     }
 
     @DeleteMapping("/{positionId}")
     public ResponseEntity<Void> deletePosition(@PathVariable Long positionId) {
-        domainPositionService.deletePosition(positionId);
+        positionDomainService.deletePosition(positionId);
         return ResponseEntity.ok().build();
     }
 
@@ -66,7 +64,18 @@ public class PositionController {
     public ResponseEntity<PositionResponse> patchPosition(
             @RequestBody
             PositionUpdate request) {
-        return ResponseEntity.ok(positionMapper.toPositionResponse(domainPositionService.updatePosition(request)));
+        return ResponseEntity.ok(toPositionResponse(positionDomainService.updatePosition(request)));
+    }
+
+    private PositionResponse toPositionResponse(PositionAggregate positionAggregate) {
+        return PositionResponse.builder()
+                .id(positionAggregate.getId())
+                .avgBuyPrice(positionAggregate.getAvgBuyPrice())
+                .coin(positionAggregate.getCoin())
+                .goals(positionAggregate.calculateGoals())
+                .holdings(positionAggregate.currentHoldings())
+                .totalProfit(positionAggregate.calculatePnl())
+                .build();
     }
 
     /*@PostMapping("/{positionId}/goal")

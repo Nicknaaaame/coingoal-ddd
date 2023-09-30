@@ -8,7 +8,7 @@ import ru.lapotko.coingoal.core.position.request.PositionCreate;
 
 import java.util.Optional;
 
-public interface PositionRepository {
+public interface PositionDomainRepository {
 
     PositionAggregate createPosition(PositionCreate request);
 

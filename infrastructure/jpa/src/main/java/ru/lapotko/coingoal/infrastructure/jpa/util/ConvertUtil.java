@@ -4,7 +4,6 @@ import org.springframework.data.domain.*;
 import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
 import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.*;
-import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;

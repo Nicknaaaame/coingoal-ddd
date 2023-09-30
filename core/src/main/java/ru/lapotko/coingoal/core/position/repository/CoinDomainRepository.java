@@ -7,7 +7,7 @@ import ru.lapotko.coingoal.core.position.Coin;
 
 import java.util.Optional;
 
-public interface CoinRepository {
+public interface CoinDomainRepository {
     Optional<Coin> findCoinById(Long coinId);
 
     PageInfo<Coin> findAll(CoinFilterInfo filter, PageableInfo pageable);

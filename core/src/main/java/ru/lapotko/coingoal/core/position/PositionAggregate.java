@@ -160,12 +160,12 @@ public class PositionAggregate {
     }
 
     public static class PositionBuilder {
+        private final List<Goal> goals = new ArrayList<>();
         private Long id;
         private UserId userId;
         private CoinAmount holdings;
         private FiatAmount avgBuyPrice;
         private Coin coin;
-        private final List<Goal> goals = new ArrayList<>();
 
         public PositionBuilder id(Long id) {
             this.id = id;

@@ -11,14 +11,15 @@ import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.Goal;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
-import ru.lapotko.coingoal.core.position.repository.PositionRepository;
+import ru.lapotko.coingoal.core.position.repository.PositionDomainRepository;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.PositionEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.GoalJpaRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionJpaRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.service.PositionJpaService;
+import ru.lapotko.coingoal.infrastructure.jpa.repository.GoalEntityRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionEntityRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.service.CoinEntityService;
+import ru.lapotko.coingoal.infrastructure.jpa.service.PositionEntityService;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 import java.util.List;
@@ -26,12 +27,13 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class PositionDomainRepository implements PositionRepository {
+public class PositionDomainJpaRepository implements PositionDomainRepository {
 
-    private final CoinJpaService coinJpaService;
-    private final PositionJpaService positionJpaService;
-    private final PositionJpaRepository positionJpaRepository;
-    private final GoalJpaRepository goalJpaRepository;
+    private final CoinEntityService coinEntityService;
+    private final PositionEntityService positionEntityService;
+    private final PositionEntityRepository positionEntityRepository;
+    private final GoalEntityRepository goalEntityRepository;
+
     @Override
     @Transactional(isolation = Isolation.DEFAULT)
     public PositionAggregate createPosition(PositionCreate positionRequest) {
@@ -39,10 +41,10 @@ public class PositionDomainRepository implements PositionRepository {
         positionEntity.setUserId("ADMIN_USER");
         positionEntity.setAvgBuyPrice(positionRequest.avgBuyPrice());
         positionEntity.setHoldings(positionRequest.holdings());
-        CoinEntity coin = coinJpaService.getCoin(positionRequest.coinId());
+        CoinEntity coin = coinEntityService.getCoin(positionRequest.coinId());
         positionEntity.setCoin(coin);
 
-        positionJpaService.savePosition(positionEntity);
+        positionEntityService.savePosition(positionEntity);
 
         return positionEntity.toDomain();
     }
@@ -50,33 +52,33 @@ public class PositionDomainRepository implements PositionRepository {
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void savePosition(PositionAggregate positionAggregate) {
-        PositionEntity positionEntity = positionJpaService.getPosition(positionAggregate.getId());
+        PositionEntity positionEntity = positionEntityService.getPosition(positionAggregate.getId());
         positionEntity.setUserId("ADMIN_USER");
         positionEntity.setAvgBuyPrice(positionAggregate.getAvgBuyPrice().fiat());
         positionEntity.setHoldings(positionAggregate.currentHoldings().amount());
-        positionEntity.setCoin(coinJpaService.getCoin(positionAggregate.getCoin().id()));
+        positionEntity.setCoin(coinEntityService.getCoin(positionAggregate.getCoin().id()));
 
         List<Long> goalIds = positionAggregate.getGoalDefinitions().stream().map(Goal::getId).toList();
 
-        positionEntity.setGoals(goalJpaRepository.findAllById(goalIds));
-        positionJpaService.savePosition(positionEntity);
+        positionEntity.setGoals(goalEntityRepository.findAllById(goalIds));
+        positionEntityService.savePosition(positionEntity);
     }
 
     @Override
     public Optional<PositionAggregate> findPositionById(Long id) {
-        return positionJpaRepository.findById(id).map(PositionEntity::toDomain);
+        return positionEntityRepository.findById(id).map(PositionEntity::toDomain);
     }
 
     @Override
     public PageInfo<PositionAggregate> findAll(PositionFilterInfo filterInfo, PageableInfo pageableInfo) {
         PositionFilter filter = ConvertUtil.convertToPositionFilter(filterInfo);
         Pageable pageable = ConvertUtil.convertToPageable(pageableInfo);
-        Page<PositionEntity> page = positionJpaRepository.findAll(filter.getFilter(), pageable);
+        Page<PositionEntity> page = positionEntityRepository.findAll(filter.getFilter(), pageable);
         return ConvertUtil.convertToPageInfo(page.map(PositionEntity::toDomain));
     }
 
     @Override
     public void deletePosition(Long id) {
-        positionJpaRepository.delete(positionJpaService.getPosition(id));
+        positionEntityRepository.delete(positionEntityService.getPosition(id));
     }
 }

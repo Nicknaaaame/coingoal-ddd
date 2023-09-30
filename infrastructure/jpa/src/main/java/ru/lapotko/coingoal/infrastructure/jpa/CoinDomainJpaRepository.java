@@ -8,29 +8,30 @@ import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.Coin;
-import ru.lapotko.coingoal.core.position.repository.CoinRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
+import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.CoinJpaRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.repository.CoinEntityRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class CoinDomainRepository implements CoinRepository {
+public class CoinDomainJpaRepository implements CoinDomainRepository {
 
-    private final CoinJpaRepository coinJpaRepository;
+    private final CoinEntityRepository coinEntityRepository;
+
     @Override
     public Optional<Coin> findCoinById(Long coinId) {
-        return coinJpaRepository.findById(coinId).map(CoinEntity::toDomain);
+        return coinEntityRepository.findById(coinId).map(CoinEntity::toDomain);
     }
 
     @Override
     public PageInfo<Coin> findAll(CoinFilterInfo filterInfo, PageableInfo pageableInfo) {
         Pageable pageable = ConvertUtil.convertToPageable(pageableInfo);
         CoinFilter filter = ConvertUtil.convertToCoinFilter(filterInfo);
-        Page<CoinEntity> page = coinJpaRepository.findAll(filter.getFilter(), pageable);
+        Page<CoinEntity> page = coinEntityRepository.findAll(filter.getFilter(), pageable);
         return ConvertUtil.convertToPageInfo(page.map(CoinEntity::toDomain));
     }
 }

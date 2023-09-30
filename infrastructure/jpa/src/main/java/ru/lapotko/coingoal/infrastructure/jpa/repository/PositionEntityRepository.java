@@ -11,7 +11,7 @@ import ru.lapotko.coingoal.infrastructure.jpa.entity.PositionEntity;
 
 import java.util.Optional;
 
-public interface PositionJpaRepository extends JpaRepository<PositionEntity, Long>, QuerydslPredicateExecutor<PositionEntity> {
+public interface PositionEntityRepository extends JpaRepository<PositionEntity, Long>, QuerydslPredicateExecutor<PositionEntity> {
     @NonNull
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"coin", "goals"})
     Page<PositionEntity> findAll(@NonNull Predicate predicate, @NonNull Pageable pageable);

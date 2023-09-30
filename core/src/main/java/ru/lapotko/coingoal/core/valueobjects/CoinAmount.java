@@ -1,6 +1,5 @@
 package ru.lapotko.coingoal.core.valueobjects;
 
-import lombok.Getter;
 import ru.lapotko.coingoal.core.exception.DomainValidationException;
 
 import java.math.BigDecimal;
