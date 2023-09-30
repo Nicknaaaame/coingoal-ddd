@@ -8,7 +8,7 @@ import ru.lapotko.coingoal.infrastructure.jpa.config.JpaConfig;
 
 @SpringBootApplication
 @Import(JpaConfig.class)
-@ComponentScan("ru.lapotko.coingoal.infrastructure.jpa")
+@ComponentScan(basePackages = {"ru.lapotko.coingoal.application.rest", "ru.lapotko.coingoal.infrastructure.jpa"})
 public class RestCoinGoalApplication {
 
 	public static void main(String[] args) {
