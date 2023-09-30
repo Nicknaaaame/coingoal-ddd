@@ -5,7 +5,7 @@ import ru.lapotko.coingoal.core.valueobjects.*;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PositionAggregateTest {
     @Test
@@ -51,26 +51,7 @@ class PositionAggregateTest {
 
     @Test
     void shouldCorrectCalculateSecondGoal() {
-        PositionAggregate positionAggregate = new PositionAggregate.PositionBuilder()
-                .id(1L)
-                .avgBuyPrice(BigDecimal.valueOf(100))
-                .holdings(BigDecimal.valueOf(100))
-                .userId("USER_TEST")
-                .withCoin(
-                        1L,
-                        BigDecimal.valueOf(100),
-                        "Bitcoin",
-                        "BTC",
-                        BigDecimal.valueOf(1.1))
-                .withGoal(new Goal(
-                        1L,
-                        new FiatAmount(BigDecimal.valueOf(110)),
-                        new CoinAmount(BigDecimal.valueOf(1))))
-                .withGoal(new Goal(
-                        2L,
-                        new FiatAmount(BigDecimal.valueOf(120)),
-                        new CoinAmount(BigDecimal.valueOf(2))))
-                .build();
+        PositionAggregate positionAggregate = prepareAggregate();
 
         CalculatedGoal goal = positionAggregate.calculateGoals().get(1);
         Weight expectedWeight = new Weight(1);
@@ -93,5 +74,38 @@ class PositionAggregateTest {
         assertEquals(expectedSellAmount, goal.sellAmount());
         assertEquals(expectedHoldingsRemain, goal.holdingsRemain());
         assertEquals(expectedPnl, goal.pnl());
+    }
+
+    @Test
+    void shouldCalculatePnl() {
+        PositionAggregate positionAggregate = prepareAggregate();
+
+        Pnl expectedPnl = new Pnl(
+                new FiatAmount(BigDecimal.valueOf(50)),
+                new PercentAmount(BigDecimal.valueOf(50)));
+        assertEquals(expectedPnl, positionAggregate.calculatePnl());
+    }
+
+    private PositionAggregate prepareAggregate() {
+        return new PositionAggregate.PositionBuilder()
+                .id(1L)
+                .avgBuyPrice(BigDecimal.valueOf(100))
+                .holdings(BigDecimal.valueOf(100))
+                .userId("USER_TEST")
+                .withCoin(
+                        1L,
+                        BigDecimal.valueOf(100),
+                        "Bitcoin",
+                        "BTC",
+                        BigDecimal.valueOf(1.1))
+                .withGoal(new Goal(
+                        1L,
+                        new FiatAmount(BigDecimal.valueOf(110)),
+                        new CoinAmount(BigDecimal.valueOf(1))))
+                .withGoal(new Goal(
+                        2L,
+                        new FiatAmount(BigDecimal.valueOf(120)),
+                        new CoinAmount(BigDecimal.valueOf(2))))
+                .build();
     }
 }
