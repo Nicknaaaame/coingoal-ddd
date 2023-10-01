@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.lapotko.coingoal.core.position.Goal;
+import ru.lapotko.coingoal.core.valueobjects.CoinAmount;
+import ru.lapotko.coingoal.core.valueobjects.FiatAmount;
+import ru.lapotko.coingoal.core.valueobjects.Weight;
 
 import java.math.BigDecimal;
 
@@ -26,4 +30,12 @@ public class GoalEntity {
 
     @ManyToOne
     private PositionEntity position;
+
+    public Goal toDomain() {
+        return new Goal(
+                id,
+                new Weight(weight),
+                new FiatAmount(sellPrice),
+                new CoinAmount(sellAmount));
+    }
 }

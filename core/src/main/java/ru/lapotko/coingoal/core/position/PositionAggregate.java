@@ -7,6 +7,7 @@ import ru.lapotko.coingoal.core.valueobjects.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ public class PositionAggregate {
     }
 
     public List<Goal> getGoalDefinitions() {
-        return position.getGoals();
+        return Collections.unmodifiableList(position.getGoals());
     }
 
     public void addGoal(Goal goal) {
@@ -88,11 +89,9 @@ public class PositionAggregate {
 
         List<CalculatedGoal> result = new ArrayList<>();
         BigDecimal holdingsRemain = position.getHoldings().amount();
-        int weight = 0;
         for (Goal goal : this.position.getGoals()) {
             BigDecimal sellPrice = goal.getSellPrice().fiat();
             BigDecimal sellAmount = goal.getSellAmount().amount();
-            Weight weightValue = new Weight(weight++);
 
             FiatAmount sellPriceFiat = new FiatAmount(sellPrice);
             PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), sellPrice));
@@ -114,7 +113,7 @@ public class PositionAggregate {
 
             result.add(new CalculatedGoal(
                     goal.getId(),
-                    weightValue,
+                    goal.getWeight(),
                     sellPriceValue,
                     sellAmountValue,
                     holdingsRemainValue,
@@ -204,6 +203,11 @@ public class PositionAggregate {
 
         public PositionBuilder withGoal(Goal goal) {
             this.goals.add(goal);
+            return this;
+        }
+
+        public PositionBuilder withGoals(List<Goal> goals) {
+            this.goals.addAll(goals);
             return this;
         }
 

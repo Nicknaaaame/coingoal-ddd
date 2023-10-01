@@ -35,7 +35,6 @@ public class PositionDomainJpaRepository implements PositionDomainRepository {
     private final GoalEntityRepository goalEntityRepository;
 
     @Override
-    @Transactional(isolation = Isolation.DEFAULT)
     public PositionAggregate createPosition(PositionCreate positionRequest) {
         PositionEntity positionEntity = new PositionEntity();
         positionEntity.setUserId("ADMIN_USER");
@@ -50,7 +49,6 @@ public class PositionDomainJpaRepository implements PositionDomainRepository {
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void savePosition(PositionAggregate positionAggregate) {
         PositionEntity positionEntity = positionEntityService.getPosition(positionAggregate.getId());
         positionEntity.setUserId("ADMIN_USER");

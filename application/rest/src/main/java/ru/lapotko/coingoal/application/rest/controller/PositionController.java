@@ -9,11 +9,12 @@ import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
 import ru.lapotko.coingoal.application.rest.mapper.RestMapper;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
+import ru.lapotko.coingoal.core.position.request.GoalRequest;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
-import ru.lapotko.coingoal.core.position.service.PositionDomainService;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.service.PositionApplicationService;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 import static ru.lapotko.coingoal.application.rest.mapper.RestMapper.toPositionResponse;
@@ -22,7 +23,7 @@ import static ru.lapotko.coingoal.application.rest.mapper.RestMapper.toPositionR
 @RequestMapping("/api/v1/position")
 @RequiredArgsConstructor
 public class PositionController {
-    private final PositionDomainService positionDomainService;
+    private final PositionApplicationService positionService;
 
     @GetMapping
     public ResponseEntity<Page<PositionResponse>> getPositionPage(
@@ -37,7 +38,7 @@ public class PositionController {
                         .symbol(coinSymbol)
                         .build())
                 .build();
-        PageInfo<PositionAggregate> positionPageInfo = positionDomainService.getPositionPage(
+        PageInfo<PositionAggregate> positionPageInfo = positionService.getPositionPage(
                 ConvertUtil.convertToPositionFilter(filter),
                 ConvertUtil.convertToPageableInfo(pageable));
         Page<PositionAggregate> positionPage = ConvertUtil.convertToPage(positionPageInfo, pageable);
@@ -46,20 +47,20 @@ public class PositionController {
 
     @GetMapping("/{positionId}")
     public ResponseEntity<PositionResponse> getPositionById(@PathVariable Long positionId) {
-        return ResponseEntity.ok(toPositionResponse(positionDomainService.getPosition(positionId)));
+        return ResponseEntity.ok(toPositionResponse(positionService.getPosition(positionId)));
     }
 
     @PostMapping
     public ResponseEntity<Long> createPosition(
             @RequestBody
             PositionCreate request) {
-        PositionAggregate position = positionDomainService.createPosition(request);
+        PositionAggregate position = positionService.createPosition(request);
         return ResponseEntity.ok(position.getId());
     }
 
     @DeleteMapping("/{positionId}")
     public ResponseEntity<Void> deletePosition(@PathVariable Long positionId) {
-        positionDomainService.deletePosition(positionId);
+        positionService.deletePosition(positionId);
         return ResponseEntity.ok().build();
     }
 
@@ -67,24 +68,21 @@ public class PositionController {
     public ResponseEntity<PositionResponse> patchPosition(
             @RequestBody
             PositionUpdate request) {
-        return ResponseEntity.ok(toPositionResponse(positionDomainService.updatePosition(request)));
+        return ResponseEntity.ok(toPositionResponse(positionService.updatePosition(request)));
     }
 
-
-
-    /*@PostMapping("/{positionId}/goal")
+    @PostMapping("/{positionId}/goal")
     public ResponseEntity<Long> createGoal(
-            @Valid @RequestBody GoalRequest request,
-            @PathVariable Long positionId) {
-//        return ResponseEntity.ok(goalService.createGoal(request).getId());
-        return null;
+            @PathVariable Long positionId,
+            @RequestBody GoalRequest request) {
+        return ResponseEntity.ok(positionService.addGoal(positionId, request));
     }
 
     @DeleteMapping("/{positionId}/goal/{goalId}")
     public ResponseEntity<Void> deleteGoal(
             @PathVariable Long positionId,
             @PathVariable Long goalId) {
-//        goalService.deleteGoal(goalId);
+        positionService.deleteGoal(positionId, goalId);
         return ResponseEntity.ok().build();
-    }*/
+    }
 }

@@ -50,4 +50,11 @@ public class ApiExceptionHandler {
                 new ErrorDetails(new Date(), List.of(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handle500(Exception exception, WebRequest request) {
+        return new ResponseEntity<>(
+                new ErrorDetails(new Date(), List.of("Server error"), HttpStatus.INTERNAL_SERVER_ERROR),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

@@ -23,6 +23,7 @@ class PositionAggregateTest {
                         BigDecimal.valueOf(1.1))
                 .withGoal(new Goal(
                         1L,
+                        new Weight(0),
                         new FiatAmount(BigDecimal.valueOf(110)),
                         new CoinAmount(BigDecimal.valueOf(1))))
                 .build();
@@ -100,10 +101,12 @@ class PositionAggregateTest {
                         BigDecimal.valueOf(1.1))
                 .withGoal(new Goal(
                         1L,
+                        new Weight(0),
                         new FiatAmount(BigDecimal.valueOf(110)),
                         new CoinAmount(BigDecimal.valueOf(1))))
                 .withGoal(new Goal(
                         2L,
+                        new Weight(1),
                         new FiatAmount(BigDecimal.valueOf(120)),
                         new CoinAmount(BigDecimal.valueOf(2))))
                 .build();

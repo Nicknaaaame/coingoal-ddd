@@ -7,6 +7,7 @@ import ru.lapotko.coingoal.core.valueobjects.FiatAmount;
 import ru.lapotko.coingoal.core.valueobjects.UserId;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -22,10 +23,12 @@ class PositionRootEntity {
 
     void addGoal(Goal goal) {
         this.goals.add(goal);
+        Collections.sort(goals);
     }
 
     void addGoals(List<Goal> goals) {
         this.goals.addAll(goals);
+        Collections.sort(goals);
     }
 
     public void setHoldings(CoinAmount holdings) {

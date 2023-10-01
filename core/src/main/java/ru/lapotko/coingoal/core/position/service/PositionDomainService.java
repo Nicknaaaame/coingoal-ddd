@@ -5,9 +5,11 @@ import ru.lapotko.coingoal.core.exception.PositionNotFoundException;
 import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
+import ru.lapotko.coingoal.core.position.Goal;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
-import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
+import ru.lapotko.coingoal.core.position.repository.GoalDomainRepository;
 import ru.lapotko.coingoal.core.position.repository.PositionDomainRepository;
+import ru.lapotko.coingoal.core.position.request.GoalRequest;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
 
@@ -17,6 +19,7 @@ import static java.util.Optional.ofNullable;
 public class PositionDomainService {
 
     private final PositionDomainRepository positionDomainRepository;
+    private final GoalDomainRepository goalDomainRepository;
 
     public PositionAggregate createPosition(PositionCreate request) {
         return positionDomainRepository.createPosition(request);
@@ -42,5 +45,20 @@ public class PositionDomainService {
 
     public void deletePosition(Long positionId) {
         positionDomainRepository.deletePosition(positionId);
+    }
+
+    public Long addGoal(Long positionId, GoalRequest goalRequest) {
+        PositionAggregate positionAggregate = getPosition(positionId);
+        Goal goal = goalDomainRepository.createGoal(positionId, goalRequest);
+        positionAggregate.addGoal(goal);
+        positionDomainRepository.savePosition(positionAggregate);
+        return goal.getId();
+    }
+
+    public void deleteGoal(Long positionId, Long goalId) {
+        PositionAggregate positionAggregate = getPosition(positionId);
+        positionAggregate.removeGoal(goalId);
+        goalDomainRepository.deleteGoal(goalId);
+        positionDomainRepository.savePosition(positionAggregate);
     }
 }

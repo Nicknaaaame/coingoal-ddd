@@ -6,6 +6,7 @@ import ru.lapotko.coingoal.core.position.PositionAggregate;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity(name = "position")
 @Data
@@ -42,6 +43,7 @@ public class PositionEntity {
                 .holdings(this.getHoldings())
                 .userId(this.getUserId())
                 .coin(coin.toDomain())
+                .withGoals(goals.stream().map(GoalEntity::toDomain).collect(Collectors.toList()))
                 .build();
     }
 }

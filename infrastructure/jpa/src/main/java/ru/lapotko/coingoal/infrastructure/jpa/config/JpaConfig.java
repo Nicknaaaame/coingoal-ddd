@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
+import ru.lapotko.coingoal.core.position.repository.GoalDomainRepository;
 import ru.lapotko.coingoal.core.position.repository.PositionDomainRepository;
 import ru.lapotko.coingoal.core.position.service.PositionDomainService;
 
@@ -23,8 +24,9 @@ import java.util.Properties;
 public class JpaConfig {
     @Bean
     public PositionDomainService domainPositionService(
-            PositionDomainRepository positionDomainRepository) {
-        return new PositionDomainService(positionDomainRepository);
+            PositionDomainRepository positionDomainRepository,
+            GoalDomainRepository goalDomainRepository) {
+        return new PositionDomainService(positionDomainRepository, goalDomainRepository);
     }
 
     @Bean
