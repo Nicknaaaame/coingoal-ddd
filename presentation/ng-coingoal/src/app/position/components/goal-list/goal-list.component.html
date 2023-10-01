@@ -1,0 +1,28 @@
+<div class="row">
+  <div *ngIf="_goalsRows.length !== 0; then notEmptyGoals else emptyGoals">
+  </div>
+
+  <ng-template #notEmptyGoals>
+    <div class="col-1">
+    </div>
+    <div class="col-2">
+    </div>
+    <div class="col-2">
+      <span>Sell price</span>
+    </div>
+    <div class="col-2">
+      <span>Sell amount</span>
+    </div>
+    <div class="col-2">
+      <span>Holdings</span>
+    </div>
+    <div class="col-2">
+      <span>Pnl</span>
+    </div>
+    <goal-row (deleteGoalEvent)="deleteGoal($event)" *ngFor="let goalRow of _goalsRows" [goalRow]="goalRow"></goal-row>
+  </ng-template>
+
+  <ng-template #emptyGoals>
+  </ng-template>
+
+</div>

@@ -1,0 +1,65 @@
+<div class="container" style="margin-top: 3rem">
+  <div class="row m-lg-2">
+    <div class="col-1 text-center">
+      <button (click)="loadCoins()" class="btn btn-light rounded-circle"
+              data-bs-target="#addPositionModal"
+              data-bs-toggle="modal"
+              type="button">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
+    <div class="col">
+      <position-row (deletePositionEvent)="deletePosition($event)" *ngFor="let position of positionPage.content"
+                    [position]="position">
+      </position-row>
+    </div>
+  </div>
+</div>
+
+<div aria-hidden="true" class="modal fade" id="addPositionModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form (submit)="addPosition()" [formGroup]="form">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Position</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row m-lg-2">
+            <ng-select
+              [items]="coinSelect$ | async"
+              [loading]="coinSelectLoading"
+              [typeahead]="coinSelectInput$"
+              bindLabel="name"
+              bindValue="id"
+              formControlName="coinId"
+              placeholder="Coin"
+            ></ng-select>
+          </div>
+          <div class="row m-lg-2">
+            <div class="col">
+              <div class="input-group mb-3">
+                <input aria-label="Holdings" class="form-control" formControlName="holdings" id="holdings"
+                       placeholder="Holdings" type="number">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="avg-buy-price-addon">$</span>
+                <input aria-describedby="avg-buy-price-addon" aria-label="Avg. buy price" class="form-control" formControlName="avgBuyPrice"
+                       id="avg-buy-price" placeholder="Avg. buy price"
+                       type="number">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-bs-dismiss="modal" style="width: 100%" type="submit">
+            Add
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+

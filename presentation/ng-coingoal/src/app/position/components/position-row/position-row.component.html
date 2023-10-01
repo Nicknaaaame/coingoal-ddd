@@ -1,0 +1,197 @@
+<div style="margin-bottom: 3.5rem">
+
+  <div class="row">
+    <div class="col-1">
+      <span>{{positionRow.coin.name}}</span>
+    </div>
+    <div class="col-2">
+      <h4>Now</h4>
+    </div>
+    <div class="col-2">
+      <div>
+        <span>Price</span><br>
+        <span>{{positionRow.coin.price}}</span>
+      </div>
+    </div>
+    <div class="col-2">
+      <div>
+        <span>24H</span><br>
+        <span [style.color]="positionRow.coin.change24h.color">{{positionRow.coin.change24h.value}}</span>
+      </div>
+    </div>
+    <div class="col-2">
+      <div>
+        <span>Holdings</span><br>
+        <span>{{positionRow.holdings.fiatAmount}}</span><br>
+        <span>{{positionRow.holdings.coinAmount}}</span>
+      </div>
+    </div>
+    <div class="col">
+      <div>
+        <span>Avg. buy price</span><br>
+        <span>{{positionRow.avgBuyPrice}}</span><br>
+      </div>
+    </div>
+    <div class="col text-center">
+      <button [attr.aria-controls]="'collapseExample'+positionRow.id"
+              [attr.data-bs-target]="'#collapseExample'+positionRow.id"
+              aria-expanded="true"
+              class="btn btn-light rounded-circle btn-sm"
+              data-bs-toggle="collapse"
+              type="button">
+        <i class="bi bi-chevron-expand"></i>
+      </button>
+      <button class="btn btn-light rounded-circle btn-sm" data-bs-target="#editPositionModal"
+              data-bs-toggle="modal"
+              style="margin-left: 0.5rem"
+              type="button">
+        <i class="bi bi-pencil"></i>
+      </button>
+      <button class="btn btn-light rounded-circle btn-sm" data-bs-target="#deletePositionModal"
+              data-bs-toggle="modal"
+              style="margin-left: 0.5rem"
+              type="button">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="row collapse show" id="collapseExample{{positionRow.id}}" style="margin-top: 1rem">
+    <goal-list (deleteGoalEvent)="deleteGoal($event)" [goalRows]="positionRow.goals"></goal-list>
+    <form (submit)="addGoal()" [formGroup]="saveGoalForm">
+      <div class="row">
+        <div class="col-1"></div>
+        <div class="col-2">
+          <button class="btn btn-light rounded-circle" type="submit">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+        <div class="col-2">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="price-addon">$</span>
+            <input (input)="updatePricePercentInput()" aria-describedby="price-addon" aria-label="Sell price"
+                   class="form-control" formControlName="price"
+                   id="price"
+                   placeholder="Sell price"
+                   type="number">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="coin-addon">{{positionRow.coin.symbol}}</span>
+            <input (input)="updateAmountPercentInput()" aria-describedby="coin-addon" aria-label="Amount"
+                   class="form-control" formControlName="amount"
+                   id="amount"
+                   placeholder="Amount"
+                   type="number">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-1"></div>
+        <div class="col-2"></div>
+        <div class="col-2">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="price-percent-addon">%</span>
+            <input (input)="updatePriceInput()" aria-describedby="price-percent-addon" aria-label="%"
+                   class="form-control"
+                   formControlName="pricePercent" id="price-percent"
+                   max="100" min="0" placeholder="%"
+                   type="number">
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="amount-percent-addon">%</span>
+            <input (input)="updateAmountInput()" aria-describedby="amount-percent-addon" aria-label="%"
+                   class="form-control"
+                   formControlName="amountPercent" id="amount-percent"
+                   max="100" min="0" placeholder="%"
+                   type="number">
+          </div>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="position.totalProfit" class="row">
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-8">
+          <hr class="hr"/>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 1rem">
+        <div class="col-1"></div>
+        <div class="col-2">
+          <h5>Goal profit</h5>
+        </div>
+        <div class="col-2">
+          <span>{{positionRow.totalProfit.value}}</span><br>
+          <span [style.color]="positionRow.totalProfit.percent.color">{{positionRow.totalProfit.percent.value}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--modal-->
+
+<div aria-hidden="true" class="modal fade" id="editPositionModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form (submit)="editPosition()" [formGroup]="editPositionForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Position</h5>
+          <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row m-lg-2">
+            <div class="col">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="holdings-addon">{{position.coin.symbol}}</span>
+                <input aria-describedby="holdings-addon" aria-label="Holdings" class="form-control"
+                       formControlName="holdings" id="holdings"
+                       placeholder="Holdings" type="number">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="avg-buy-price-addon">$</span>
+                <input aria-describedby="avg-buy-price-addon" aria-label="Avg. buy price" class="form-control"
+                       formControlName="avgBuyPrice"
+                       id="avg-buy-price" placeholder="Avg. buy price"
+                       type="number">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button (click)="editPosition()" class="btn btn-primary" data-bs-dismiss="modal" style="width: 100%"
+                  type="button">
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div aria-hidden="true" class="modal fade" id="deletePositionModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Position</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+      </div>
+      <div class="modal-body">
+        <span>Are you sure you want to delete the Position with its goals?</span>
+      </div>
+      <div class="modal-footer">
+        <button (click)="deletePosition()" class="btn btn-primary" data-bs-dismiss="modal" style="width: 100%"
+                type="button">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

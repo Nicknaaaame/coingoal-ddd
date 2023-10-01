@@ -1,0 +1,30 @@
+<div class="row" style="margin-bottom: 0.5rem">
+  <div class="col-1">
+  </div>
+  <div class="col-2">
+    <div class="col">
+      <button (click)="deleteGoal()" class="btn btn-light rounded-circle btn-sm">
+        <i class="bi bi-x"></i>
+      </button>
+      <span style="margin-left: 1rem">Goal {{goalRow.weight}}</span>
+    </div>
+  </div>
+  <div class="col-2">
+    <span>{{goalRow.sellPrice.fiatAmount}}</span><br>
+    <span [style.color]="goalRow.sellPrice.percentRow.color">{{goalRow.sellPrice.percentRow.value}}</span>
+  </div>
+  <div class="col-2">
+    <span>{{goalRow.sellAmount.coinAmount}}</span><br>
+    <span>{{goalRow.sellAmount.fiatAmount}}</span><br>
+    <span>{{goalRow.sellAmount.percent}}</span>
+  </div>
+  <div class="col-2">
+    <span>{{goalRow.holdingsRemain.coinAmount}}</span><br>
+    <span>{{goalRow.holdingsRemain.fiatAmount}}</span><br>
+    <span>{{goalRow.holdingsRemain.percent}}</span>
+  </div>
+  <div class="col-2">
+    <span>{{goalRow.pnl.value}}</span><br>
+    <span [style.color]="goalRow.pnl.percent.color">{{goalRow.pnl.percent.value}}</span>
+  </div>
+</div>
