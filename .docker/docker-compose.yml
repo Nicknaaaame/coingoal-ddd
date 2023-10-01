@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  ng-coingoal:
+    container_name: ng-coingoal
+    build: ../presentation/ng-coingoal
+    restart: on-failure
+    ports:
+      - 4200:80
