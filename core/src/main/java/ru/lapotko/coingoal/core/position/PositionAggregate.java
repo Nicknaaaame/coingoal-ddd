@@ -49,29 +49,29 @@ public class PositionAggregate {
 
     public void addGoal(Goal goal) {
         this.position.addGoal(goal);
-        cachedCalculatedGoals = null;
+        cachedCalculatedGoals = calculateGoals();
     }
 
     public void removeGoal(Long goalId) {
         this.position.getGoals().remove(getGoal(goalId));
-        cachedCalculatedGoals = null;
+        cachedCalculatedGoals = calculateGoals();
     }
 
     public void updateGoal(Goal goal) {
         Goal updated = getGoal(goal.getId());
         updated.setSellAmount(goal.getSellAmount());
         updated.setSellPrice(goal.getSellPrice());
-        cachedCalculatedGoals = null;
+        cachedCalculatedGoals = calculateGoals();
     }
 
     public void updateAvgBuyPrice(BigDecimal avgBuyPrice) {
         this.position.setAvgBuyPrice(new FiatAmount(avgBuyPrice));
-        cachedCalculatedGoals = null;
+        cachedCalculatedGoals = calculateGoals();
     }
 
     public void updateHoldings(BigDecimal holdings) {
         this.position.setHoldings(new CoinAmount(holdings));
-        cachedCalculatedGoals = null;
+        cachedCalculatedGoals = calculateGoals();
     }
 
     private Goal getGoal(Long goalId) {

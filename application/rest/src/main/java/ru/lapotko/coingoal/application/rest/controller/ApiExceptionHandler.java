@@ -21,6 +21,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleRequestValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        ex.printStackTrace();
         List<String> errors = new ArrayList<>();
 
         ex.getAllErrors().forEach(err -> errors.add(err.getDefaultMessage()));
@@ -31,28 +32,32 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(DomainValidationException.class)
-    public ResponseEntity<?> handleDomainValidationException(DomainValidationException exception, WebRequest request) {
+    public ResponseEntity<?> handleDomainValidationException(DomainValidationException ex, WebRequest request) {
+        ex.printStackTrace();
         return new ResponseEntity<>(
-                new ErrorDetails(new Date(), List.of(exception.getMessage()), HttpStatus.BAD_REQUEST),
+                new ErrorDetails(new Date(), List.of(ex.getMessage()), HttpStatus.BAD_REQUEST),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DomainNotFoundException.class)
-    public ResponseEntity<?> handleDomainNotFoundException(DomainNotFoundException exception, WebRequest request) {
+    public ResponseEntity<?> handleDomainNotFoundException(DomainNotFoundException ex, WebRequest request) {
+        ex.printStackTrace();
         return new ResponseEntity<>(
-                new ErrorDetails(new Date(), List.of(exception.getMessage()), HttpStatus.NOT_FOUND),
+                new ErrorDetails(new Date(), List.of(ex.getMessage()), HttpStatus.NOT_FOUND),
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DomainCoreException.class)
-    public ResponseEntity<?> handleDomainCoreException(DomainCoreException exception, WebRequest request) {
+    public ResponseEntity<?> handleDomainCoreException(DomainCoreException ex, WebRequest request) {
+        ex.printStackTrace();
         return new ResponseEntity<>(
-                new ErrorDetails(new Date(), List.of(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR),
+                new ErrorDetails(new Date(), List.of(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handle500(Exception exception, WebRequest request) {
+    public ResponseEntity<?> handle500(Exception ex, WebRequest request) {
+        ex.printStackTrace();
         return new ResponseEntity<>(
                 new ErrorDetails(new Date(), List.of("Server error"), HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR);

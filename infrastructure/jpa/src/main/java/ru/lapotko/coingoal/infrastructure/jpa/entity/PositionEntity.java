@@ -5,6 +5,7 @@ import lombok.*;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class PositionEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "position")
-    private List<GoalEntity> goals;
+    private List<GoalEntity> goals = new ArrayList<>();
 
     public PositionAggregate toDomain() {
         return new PositionAggregate.PositionBuilder()
