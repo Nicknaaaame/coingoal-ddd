@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.lapotko.coingoal.application.rest.dto.CalculatedGoalDto;
 import ru.lapotko.coingoal.application.rest.dto.CoinDto;
+import ru.lapotko.coingoal.application.rest.dto.value.FiatCoinValue;
 import ru.lapotko.coingoal.application.rest.dto.value.PnlValue;
 
 import java.math.BigDecimal;
@@ -18,7 +19,7 @@ import java.util.List;
 public class PositionResponse {
     private Long id;
     private CoinDto coin;
-    private BigDecimal holdings;
+    private FiatCoinValue holdings;
     private BigDecimal avgBuyPrice;
     private List<CalculatedGoalDto> goals;
     private PnlValue totalProfit;

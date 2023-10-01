@@ -16,12 +16,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RestMapper {
-    public static PositionResponse toPositionResponse(PositionAggregate positionAggregate) {
+    public static PositionResponse toPositionResponse(PositionAggregate position) {
         return PositionResponse.builder()
-                .id(positionAggregate.getId())
-                .avgBuyPrice(positionAggregate.getAvgBuyPrice().fiat())
-                .coin(toCoinDto(positionAggregate.getCoin()))
-                .goals(positionAggregate.calculateGoals().stream()
+                .id(position.getId())
+                .avgBuyPrice(position.getAvgBuyPrice().fiat())
+                .coin(toCoinDto(position.getCoin()))
+                .goals(position.calculateGoals().stream()
                         .map(goal -> CalculatedGoalDto.builder()
                                 .id(goal.id())
                                 .weight(goal.weight().weight())
@@ -41,8 +41,11 @@ public class RestMapper {
                                 .pnl(toPnlValue(Optional.ofNullable(goal.pnl())))
                                 .build())
                         .collect(Collectors.toList()))
-                .holdings(positionAggregate.currentHoldings().amount())
-                .totalProfit(toPnlValue(positionAggregate.calculatePnl()))
+                .holdings(FiatCoinValue.builder()
+                        .fiatAmount(position.currentHoldings().amount().multiply(position.getCoin().price().fiat()))
+                        .coinAmount(position.currentHoldings().amount())
+                        .build())
+                .totalProfit(toPnlValue(position.calculatePnl()))
                 .build();
     }
 

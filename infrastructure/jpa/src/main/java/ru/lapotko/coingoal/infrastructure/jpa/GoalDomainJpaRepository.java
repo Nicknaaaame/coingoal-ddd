@@ -32,6 +32,6 @@ public class GoalDomainJpaRepository implements GoalDomainRepository {
 
     @Override
     public void deleteGoal(Long goalId) {
-
+        goalEntityRepository.deleteById(goalId);
     }
 }
