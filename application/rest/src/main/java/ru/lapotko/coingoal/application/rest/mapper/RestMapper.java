@@ -2,11 +2,13 @@ package ru.lapotko.coingoal.application.rest.mapper;
 
 import ru.lapotko.coingoal.application.rest.dto.CalculatedGoalDto;
 import ru.lapotko.coingoal.application.rest.dto.CoinDto;
+import ru.lapotko.coingoal.application.rest.dto.response.CoinResponse;
 import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
 import ru.lapotko.coingoal.application.rest.dto.value.FiatCoinPercentValue;
 import ru.lapotko.coingoal.application.rest.dto.value.FiatCoinValue;
 import ru.lapotko.coingoal.application.rest.dto.value.FiatPercentValue;
 import ru.lapotko.coingoal.application.rest.dto.value.PnlValue;
+import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 import ru.lapotko.coingoal.core.valueobjects.Pnl;
 
@@ -18,12 +20,7 @@ public class RestMapper {
         return PositionResponse.builder()
                 .id(positionAggregate.getId())
                 .avgBuyPrice(positionAggregate.getAvgBuyPrice().fiat())
-                .coin(CoinDto.builder()
-                        .name(positionAggregate.getCoin().name().name())
-                        .change24h(positionAggregate.getCoin().change24h().change())
-                        .symbol(positionAggregate.getCoin().symbol().symbol())
-                        .price(positionAggregate.getCoin().price().fiat())
-                        .build())
+                .coin(toCoinDto(positionAggregate.getCoin()))
                 .goals(positionAggregate.calculateGoals().stream()
                         .map(goal -> CalculatedGoalDto.builder()
                                 .id(goal.id())
@@ -46,6 +43,23 @@ public class RestMapper {
                         .collect(Collectors.toList()))
                 .holdings(positionAggregate.currentHoldings().amount())
                 .totalProfit(toPnlValue(positionAggregate.calculatePnl()))
+                .build();
+    }
+
+    public static CoinDto toCoinDto(Coin coin) {
+        return CoinDto.builder()
+                .name(coin.name().name())
+                .change24h(coin.change24h().change())
+                .symbol(coin.symbol().symbol())
+                .price(coin.price().fiat())
+                .build();
+    }
+
+    public static CoinResponse toCoinResponse(Coin coin) {
+        return CoinResponse.builder()
+                .id(coin.id())
+                .name(coin.name().name())
+                .symbol(coin.symbol().symbol())
                 .build();
     }
 

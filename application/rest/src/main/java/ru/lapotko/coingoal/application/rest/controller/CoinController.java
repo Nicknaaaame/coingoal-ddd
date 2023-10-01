@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.lapotko.coingoal.application.rest.dto.response.CoinResponse;
+import ru.lapotko.coingoal.application.rest.mapper.RestMapper;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
@@ -23,7 +25,7 @@ public class CoinController {
     private final CoinDomainRepository coinDomainRepository;
 
     @GetMapping
-    public ResponseEntity<Page<Coin>> getCoinsPage(
+    public ResponseEntity<Page<CoinResponse>> getCoinsPage(
             @RequestParam(required = false)
             String name,
             @RequestParam(required = false)
@@ -37,6 +39,6 @@ public class CoinController {
         PageInfo<Coin> coins = coinDomainRepository.findAll(
                 ConvertUtil.convertToCoinFilterInfo(filter),
                 ConvertUtil.convertToPageableInfo(pageable));
-        return ResponseEntity.ok(ConvertUtil.convertToPage(coins, pageable));
+        return ResponseEntity.ok(ConvertUtil.convertToPage(coins, pageable).map(RestMapper::toCoinResponse));
     }
 }
