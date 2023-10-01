@@ -19,9 +19,9 @@ public class PositionAggregate {
         this.position = new PositionRootEntity(
                 builder.id,
                 builder.userId,
+                builder.coin,
                 builder.holdings,
-                builder.avgBuyPrice,
-                builder.coin
+                builder.avgBuyPrice
         );
         this.position.addGoals(builder.goals);
     }
@@ -127,7 +127,7 @@ public class PositionAggregate {
         return result;
     }
 
-    public Pnl calculatePnl() {
+    public Optional<Pnl> calculatePnl() {
         if (cachedCalculatedGoals == null)
             cachedCalculatedGoals = calculateGoals();
         Optional<BigDecimal> fiatSum = cachedCalculatedGoals.stream()
@@ -140,8 +140,7 @@ public class PositionAggregate {
 
         return fiatSum.map(bigDecimal -> new Pnl(
                         new FiatAmount(bigDecimal),
-                        new PercentAmount(percentSum.get())))
-                .orElse(null);
+                        new PercentAmount(percentSum.get())));
 
     }
 

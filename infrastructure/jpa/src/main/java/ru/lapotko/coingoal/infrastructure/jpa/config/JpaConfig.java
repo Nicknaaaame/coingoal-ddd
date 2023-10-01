@@ -23,9 +23,8 @@ import java.util.Properties;
 public class JpaConfig {
     @Bean
     public PositionDomainService domainPositionService(
-            PositionDomainRepository positionDomainRepository,
-            CoinDomainRepository coinDomainRepository) {
-        return new PositionDomainService(positionDomainRepository, coinDomainRepository);
+            PositionDomainRepository positionDomainRepository) {
+        return new PositionDomainService(positionDomainRepository);
     }
 
     @Bean

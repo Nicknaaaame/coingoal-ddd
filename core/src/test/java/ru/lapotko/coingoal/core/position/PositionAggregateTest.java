@@ -83,7 +83,7 @@ class PositionAggregateTest {
         Pnl expectedPnl = new Pnl(
                 new FiatAmount(BigDecimal.valueOf(50)),
                 new PercentAmount(BigDecimal.valueOf(50)));
-        assertEquals(expectedPnl, positionAggregate.calculatePnl());
+        assertEquals(expectedPnl, positionAggregate.calculatePnl().get());
     }
 
     private PositionAggregate prepareAggregate() {
