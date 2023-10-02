@@ -29,19 +29,19 @@ class PositionAggregateTest {
                 .build();
         CalculatedGoal goal = positionAggregate.calculateGoals().get(0);
         Weight expectedWeight = new Weight(0);
-        FiatPercent expectedSellPrice = new FiatPercent(
+        SellPrice expectedSellPrice = new SellPrice(
                 new FiatAmount(BigDecimal.valueOf(110)),
                 new PercentAmount(BigDecimal.valueOf(10)));
-        FiatCoinPercent expectedSellAmount = new FiatCoinPercent(
+        SellAmount expectedSellAmount = new SellAmount(
                 new FiatAmount(BigDecimal.valueOf(110)),
                 new CoinAmount(BigDecimal.valueOf(1)),
                 new PercentAmount(BigDecimal.valueOf(1)));
-        FiatCoin expectedHoldingsRemain = new FiatCoin(
-                new FiatAmount(BigDecimal.valueOf(10890)),
-                new CoinAmount(BigDecimal.valueOf(99)));
+        Holdings expectedHoldingsRemain = new Holdings(
+                BigDecimal.valueOf(10890),
+                BigDecimal.valueOf(99));
         Pnl expectedPnl = new Pnl(
-                new FiatAmount(BigDecimal.valueOf(10)),
-                new PercentAmount(BigDecimal.valueOf(10)));
+                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(10));
 
         assertEquals(expectedWeight, goal.weight());
         assertEquals(expectedSellPrice, goal.sellPrice());
@@ -56,19 +56,19 @@ class PositionAggregateTest {
 
         CalculatedGoal goal = positionAggregate.calculateGoals().get(1);
         Weight expectedWeight = new Weight(1);
-        FiatPercent expectedSellPrice = new FiatPercent(
+        SellPrice expectedSellPrice = new SellPrice(
                 new FiatAmount(BigDecimal.valueOf(120)),
                 new PercentAmount(BigDecimal.valueOf(20)));
-        FiatCoinPercent expectedSellAmount = new FiatCoinPercent(
+        SellAmount expectedSellAmount = new SellAmount(
                 new FiatAmount(BigDecimal.valueOf(240)),
                 new CoinAmount(BigDecimal.valueOf(2)),
                 new PercentAmount(BigDecimal.valueOf(2)));
-        FiatCoin expectedHoldingsRemain = new FiatCoin(
-                new FiatAmount(BigDecimal.valueOf(11640)),
-                new CoinAmount(BigDecimal.valueOf(97)));
+        Holdings expectedHoldingsRemain = new Holdings(
+                BigDecimal.valueOf(11640),
+                BigDecimal.valueOf(97));
         Pnl expectedPnl = new Pnl(
-                new FiatAmount(BigDecimal.valueOf(40)),
-                new PercentAmount(BigDecimal.valueOf(40)));
+                BigDecimal.valueOf(40),
+                BigDecimal.valueOf(40));
 
         assertEquals(expectedWeight, goal.weight());
         assertEquals(expectedSellPrice, goal.sellPrice());
@@ -82,9 +82,21 @@ class PositionAggregateTest {
         PositionAggregate positionAggregate = prepareAggregate();
 
         Pnl expectedPnl = new Pnl(
-                new FiatAmount(BigDecimal.valueOf(50)),
-                new PercentAmount(BigDecimal.valueOf(50)));
+                BigDecimal.valueOf(50),
+                BigDecimal.valueOf(50));
         assertEquals(expectedPnl, positionAggregate.calculatePnl().get());
+    }
+
+    @Test
+    void shouldCalculateGoalsWithNegativeGoals() {
+        PositionAggregate positionAggregate = prepareAggregate();
+
+        positionAggregate.addGoal(new Goal(
+                10L,
+                new Weight(5),
+                new FiatAmount(BigDecimal.ONE),
+                new CoinAmount(BigDecimal.valueOf(Integer.MAX_VALUE))
+        ));
     }
 
     private PositionAggregate prepareAggregate() {

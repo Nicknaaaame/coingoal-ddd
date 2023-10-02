@@ -35,8 +35,8 @@ public class RestMapper {
                                         .percent(goal.sellAmount().percent().percent())
                                         .build())
                                 .holdingsRemain(FiatCoinValue.builder()
-                                        .coinAmount(goal.holdingsRemain().coinAmount().amount())
-                                        .fiatAmount(goal.holdingsRemain().fiatAmount().fiat())
+                                        .coinAmount(goal.holdingsRemain().coinAmount())
+                                        .fiatAmount(goal.holdingsRemain().fiatAmount())
                                         .build())
                                 .pnl(toPnlValue(Optional.ofNullable(goal.pnl())))
                                 .build())
@@ -68,8 +68,8 @@ public class RestMapper {
 
     public static PnlValue toPnlValue(Optional<Pnl> pnlOptional) {
         return pnlOptional.map(pnl -> PnlValue.builder()
-                        .fiatAmount(pnl.fiatAmount().fiat())
-                        .percent(pnl.percent().percent())
+                        .fiatAmount(pnl.fiatAmount())
+                        .percent(pnl.percent())
                         .build())
                 .orElse(null);
     }

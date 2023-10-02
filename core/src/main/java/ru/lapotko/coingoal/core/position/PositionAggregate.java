@@ -95,20 +95,20 @@ public class PositionAggregate {
 
             FiatAmount sellPriceFiat = new FiatAmount(sellPrice);
             PercentAmount sellPricePercent = new PercentAmount(priceMovePercent(position.getAvgBuyPrice().fiat(), sellPrice));
-            FiatPercent sellPriceValue = new FiatPercent(sellPriceFiat, sellPricePercent);
+            SellPrice sellPriceValue = new SellPrice(sellPriceFiat, sellPricePercent);
 
             FiatAmount sellAmountFiat = new FiatAmount(sellPrice.multiply(sellAmount));
             CoinAmount sellAmountCoin = new CoinAmount(sellAmount);
             PercentAmount sellPercent = new PercentAmount(percent(position.getHoldings().amount(), sellAmount));
-            FiatCoinPercent sellAmountValue = new FiatCoinPercent(sellAmountFiat, sellAmountCoin, sellPercent);
+            SellAmount sellAmountValue = new SellAmount(sellAmountFiat, sellAmountCoin, sellPercent);
 
-            FiatAmount holdingsRemainFiat = new FiatAmount(holdingsRemain.subtract(sellAmount).multiply(sellPrice));
-            CoinAmount holdingsRemainCoin = new CoinAmount(holdingsRemain.subtract(sellAmount));
-            FiatCoin holdingsRemainValue = new FiatCoin(holdingsRemainFiat, holdingsRemainCoin);
+            BigDecimal holdingsRemainFiat = holdingsRemain.subtract(sellAmount).multiply(sellPrice);
+            BigDecimal holdingsRemainCoin = holdingsRemain.subtract(sellAmount);
+            Holdings holdingsRemainValue = new Holdings(holdingsRemainFiat, holdingsRemainCoin);
 
             BigDecimal difference = sellPrice.subtract(position.getAvgBuyPrice().fiat());
-            FiatAmount pnlFiat = new FiatAmount(difference.multiply(sellAmount));
-            PercentAmount pnlPercent = new PercentAmount(pnl(position.getAvgBuyPrice().fiat(), sellPrice, sellAmount));
+            BigDecimal pnlFiat = difference.multiply(sellAmount);
+            BigDecimal pnlPercent = pnl(position.getAvgBuyPrice().fiat(), sellPrice, sellAmount);
             Pnl pnlValue = new Pnl(pnlFiat, pnlPercent);
 
             result.add(new CalculatedGoal(
@@ -130,16 +130,14 @@ public class PositionAggregate {
         if (cachedCalculatedGoals == null)
             cachedCalculatedGoals = calculateGoals();
         Optional<BigDecimal> fiatSum = cachedCalculatedGoals.stream()
-                .map(goal -> goal.pnl().fiatAmount().fiat())
+                .map(goal -> goal.pnl().fiatAmount())
                 .reduce(BigDecimal::add);
 
         Optional<BigDecimal> percentSum = cachedCalculatedGoals.stream()
-                .map(goal -> goal.pnl().percent().percent())
+                .map(goal -> goal.pnl().percent())
                 .reduce(BigDecimal::add);
 
-        return fiatSum.map(bigDecimal -> new Pnl(
-                        new FiatAmount(bigDecimal),
-                        new PercentAmount(percentSum.get())));
+        return fiatSum.map(fiat -> new Pnl(fiat, percentSum.get()));
 
     }
 
