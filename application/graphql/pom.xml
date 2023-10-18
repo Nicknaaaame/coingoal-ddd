@@ -16,6 +16,8 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <dgs.codegen.shared.core.version>5.12.4</dgs.codegen.shared.core.version>
+        <graphql-codegen-plugin.version>1.50</graphql-codegen-plugin.version>
     </properties>
 
     <dependencies>
@@ -35,4 +37,30 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.github.deweyjose</groupId>
+                <artifactId>graphqlcodegen-maven-plugin</artifactId>
+                <version>${graphql-codegen-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <addGeneratedAnnotation>true</addGeneratedAnnotation>
+                    <generateDocs>true</generateDocs>
+                    <packageName>ru.lapotko.coingoal.application.graphql.types</packageName>
+                    <schemaPaths>
+                        <param>src/main/resources/graphql/schema.graphqls</param>
+                    </schemaPaths>
+                    <generatedDocsFolder>false</generatedDocsFolder>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

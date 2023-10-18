@@ -1,0 +1,25 @@
+type Query {
+  positions(
+    page: Int = 0
+    size: Int = 10
+  ): [PositionGql]
+  coins(
+    page: Int = 0
+    size: Int = 10
+  ): [CoinGql]
+}
+
+type PositionGql {
+  id: ID!
+  userId: String!
+  holdings: Float!
+  avgBuyPrice: Float!
+}
+
+type CoinGql {
+  id: ID!
+  price: Float
+  name: String
+  symbol: String
+  change24h: Float
+}
