@@ -10,25 +10,14 @@ import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.pagination.SortInfo;
 import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.entity.PositionEntity;
-import ru.lapotko.coingoal.infrastructure.jpa.repository.PositionEntityRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.service.PositionApplicationService;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-public class GraphQlController {
-    private final PositionApplicationService positionService;
-    private final PositionEntityRepository repository;
+public class CoinController {
     private final CoinDomainRepository coinDomainRepository;
-
-    @QueryMapping
-    public Iterable<PositionEntity> positions() {
-        return repository.findAll();
-    }
 
     @QueryMapping
     public Iterable<CoinGql> coins(@Argument Integer page, @Argument Integer size) {

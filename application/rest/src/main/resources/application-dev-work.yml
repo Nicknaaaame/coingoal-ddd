@@ -4,15 +4,15 @@ logging:
 
 server:
   port: 9090
-
 cors:
   origin:
     front: "http://localhost:4200"
-
 spring:
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
   datasource:
-    url: jdbc:postgresql://coingoal-postgres:5432/coingoal
+    url: jdbc:postgresql://localhost:5555/coingoal
     username: postgres
     password: postgres
