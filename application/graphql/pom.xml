@@ -58,7 +58,7 @@
                     <schemaPaths>
                         <param>src/main/resources/graphql/schema.graphqls</param>
                     </schemaPaths>
-                    <generatedDocsFolder>false</generatedDocsFolder>
+                    <generateDocs>false</generateDocs>
                 </configuration>
             </plugin>
         </plugins>

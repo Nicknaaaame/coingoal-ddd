@@ -4,6 +4,8 @@ type Query {
     size: Int = 10
   ): [PositionGql]
   coins(
+    filter: CoinFilterInput
+    sort: [CoinSortInput] = []
     page: Int = 0
     size: Int = 10
   ): [CoinGql]
@@ -22,4 +24,24 @@ type CoinGql {
   name: String
   symbol: String
   change24h: Float
+}
+
+input CoinFilterInput {
+  name: String
+  symbol: String
+}
+
+input CoinSortInput {
+  field: CoinSortField!
+  direction: SortDirection = ASC
+}
+
+enum CoinSortField {
+  ID
+  NAME
+}
+
+enum SortDirection {
+  ASC
+  DESC
 }
