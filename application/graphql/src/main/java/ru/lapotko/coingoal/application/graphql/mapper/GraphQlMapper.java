@@ -1,6 +1,6 @@
 package ru.lapotko.coingoal.application.graphql.mapper;
 
-import ru.lapotko.coingoal.application.graphql.types.types.CoinGql;
+import ru.lapotko.coingoal.application.graphql.types.CoinGql;
 import ru.lapotko.coingoal.core.position.Coin;
 
 public class GraphQlMapper {

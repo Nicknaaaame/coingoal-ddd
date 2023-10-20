@@ -54,7 +54,7 @@
                 <configuration>
                     <addGeneratedAnnotation>true</addGeneratedAnnotation>
                     <generateDocs>true</generateDocs>
-                    <packageName>ru.lapotko.coingoal.application.graphql.types</packageName>
+                    <packageName>ru.lapotko.coingoal.application.graphql</packageName>
                     <schemaPaths>
                         <param>src/main/resources/graphql/schema.graphqls</param>
                     </schemaPaths>

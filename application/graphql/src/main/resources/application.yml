@@ -3,5 +3,5 @@ spring:
     graphiql:
       enabled: true
   profiles:
-    active: dev-work
+    active: dev-home
 
