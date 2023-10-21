@@ -16,6 +16,10 @@ public class CoinJpaFilter extends CoinDomainFilter {
                 new StringJpaFilter(symbol, QCoinEntity.coinEntity.symbol));
     }
 
+    public static CoinJpaFilter empty() {
+        return new CoinJpaFilter(StringFilterInfo.builder().build(), StringFilterInfo.builder().build());
+    }
+
     @Override
     public Predicate toPredicate() {
         List<Predicate> predicates = new ArrayList<>();

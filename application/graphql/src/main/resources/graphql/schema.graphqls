@@ -1,24 +1,71 @@
 type Query {
   positions(
+    filter: PositionFilterInput
+    sort: [PositionSortField] = []
     page: Int = 0
     size: Int = 10
-  ): [PositionGql]
+  ): [PositionType]
   coins(
     filter: CoinFilterInput
     sort: [CoinSortInput] = []
     page: Int = 0
     size: Int = 10
-  ): [CoinGql]
+  ): [CoinType]
 }
 
-type PositionGql {
+type PositionType {
   id: ID!
-  userId: String!
-  holdings: Float!
-  avgBuyPrice: Float!
+  coin: CoinType
+  holdings: FiatCoinType
+  avgBuyPrice: Float
+  goals: [CalculatedGoalType]
+  totalProfit: PnlType
 }
 
-type CoinGql {
+type CalculatedGoalType {
+  id: ID!
+  weight: Int
+  sellPrice: FiatPercentType
+  sellAmount: FiatCoinPercentType
+  holdingsRemain: FiatCoinType
+  pnl: PnlType
+}
+
+type FiatPercentType {
+  fiatAmount: Float
+  percent: Float
+}
+
+type FiatCoinPercentType {
+  fiatAmount: Float
+  coinAmount: Float
+  percent: Float
+}
+
+type FiatCoinType {
+  fiatAmount: Float
+  coinAmount: Float
+}
+
+type PnlType {
+  percent: Float
+  fiatAmount: Float
+}
+
+input PositionFilterInput {
+  coinFilter: CoinFilterInput
+}
+
+input PositionSortInput {
+  field: PositionSortField! = ID
+  direction: SortDirection = ASC
+}
+
+enum PositionSortField {
+  ID
+}
+
+type CoinType {
   id: ID!
   price: Float
   name: String
@@ -27,12 +74,12 @@ type CoinGql {
 }
 
 input CoinFilterInput {
-  name: StringFilter = {}
-  symbol: StringFilter = {}
+  name: StringFilter
+  symbol: StringFilter
 }
 
 input CoinSortInput {
-  field: CoinSortField!
+  field: CoinSortField! = ID
   direction: SortDirection = ASC
 }
 

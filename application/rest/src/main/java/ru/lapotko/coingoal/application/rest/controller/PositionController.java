@@ -40,8 +40,7 @@ public class PositionController {
                                 .build(),
                         StringFilterInfo.builder()
                                 .eq(coinSymbol)
-                                .build()
-                )),
+                                .build())),
                 ConvertUtil.convertToPageableInfo(pageable));
         Page<PositionAggregate> positionPage = ConvertUtil.convertToPage(positionPageInfo, pageable);
         return ResponseEntity.ok(positionPage.map(RestMapper::toPositionResponse));

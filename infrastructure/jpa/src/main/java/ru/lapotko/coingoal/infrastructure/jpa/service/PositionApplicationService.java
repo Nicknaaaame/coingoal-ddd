@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.lapotko.coingoal.core.filtration.PositionDomainFilter;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
@@ -29,7 +30,7 @@ public class PositionApplicationService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public PageInfo<PositionAggregate> getPositionPage(PositionJpaFilter filter, PageableInfo pageableInfo) {
+    public PageInfo<PositionAggregate> getPositionPage(PositionDomainFilter filter, PageableInfo pageableInfo) {
         return positionDomainService.getPositionPage(filter, pageableInfo);
     }
 

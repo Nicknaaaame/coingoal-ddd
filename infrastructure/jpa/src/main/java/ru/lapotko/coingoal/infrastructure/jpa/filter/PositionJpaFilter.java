@@ -13,6 +13,10 @@ public class PositionJpaFilter extends PositionDomainFilter {
         super(coinFilter);
     }
 
+    public static PositionJpaFilter empty() {
+        return new PositionJpaFilter(CoinJpaFilter.empty());
+    }
+
     @Override
     public Object toPredicate() {
         List<Predicate> predicates = new ArrayList<>();

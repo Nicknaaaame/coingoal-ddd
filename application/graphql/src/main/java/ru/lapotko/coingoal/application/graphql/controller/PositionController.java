@@ -5,37 +5,38 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import ru.lapotko.coingoal.application.graphql.mapper.GraphQlMapper;
-import ru.lapotko.coingoal.application.graphql.types.CoinFilterInput;
-import ru.lapotko.coingoal.application.graphql.types.CoinSortInput;
-import ru.lapotko.coingoal.application.graphql.types.CoinType;
-import ru.lapotko.coingoal.core.filtration.CoinDomainFilter;
+import ru.lapotko.coingoal.application.graphql.types.PositionFilterInput;
+import ru.lapotko.coingoal.application.graphql.types.PositionSortInput;
+import ru.lapotko.coingoal.application.graphql.types.PositionType;
+import ru.lapotko.coingoal.core.filtration.PositionDomainFilter;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.pagination.SortInfo;
-import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.service.PositionApplicationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-public class CoinController {
-    private final CoinDomainRepository coinDomainRepository;
+public class PositionController {
+    private final PositionApplicationService positionService;
 
     @QueryMapping
-    public Iterable<CoinType> coins(
-            @Argument CoinFilterInput filter,
-            @Argument List<CoinSortInput> sort,
+    public Iterable<PositionType> positions(
+            @Argument PositionFilterInput filter,
+            @Argument List<PositionSortInput> sort,
             @Argument Integer page,
-            @Argument Integer size) {
-        CoinDomainFilter domainFilter = GraphQlMapper.toCoinDomainFilter(filter);
+            @Argument Integer size
+    ) {
+        PositionDomainFilter domainFilter = GraphQlMapper.toPositionDomainFilter(filter);
         PageableInfo pageable = PageableInfo.of(
                 page,
                 size,
                 SortInfo.of(sort.stream()
                         .map(GraphQlMapper::toOrderInfo)
                         .collect(Collectors.toList())));
-        return coinDomainRepository.findAll(domainFilter, pageable).getContent().stream()
-                .map(GraphQlMapper::toCoinType)
+        return positionService.getPositionPage(domainFilter, pageable).getContent().stream()
+                .map(GraphQlMapper::toPositionType)
                 .collect(Collectors.toList());
     }
 }
