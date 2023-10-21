@@ -13,7 +13,6 @@ import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinJpaFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionJpaFilter;
 
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GraphQlMapper {

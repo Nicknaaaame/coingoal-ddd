@@ -12,7 +12,6 @@ import ru.lapotko.coingoal.core.position.request.GoalRequest;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
 import ru.lapotko.coingoal.core.position.service.PositionDomainService;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionJpaFilter;
 
 @Service
 @RequiredArgsConstructor
