@@ -7,6 +7,8 @@ CoinGoal - это проект, созданный для отслеживани
 
 ## Структура проекта
 
+Стек: Spring Boot, Spring Boot Web, Spring Boot GraphQL, Spring Data JPA, QueryDSL, PostgreSQL, Docker Compose, Angular 15 
+
 Проект CoinGoal имеет следующую структуру на основе архитектуры Clean Architecture:
 
 - **core**: Этот слой содержит бизнес-логику и доменную модель. Здесь определены
