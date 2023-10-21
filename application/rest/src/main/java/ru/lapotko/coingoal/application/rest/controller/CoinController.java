@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lapotko.coingoal.application.rest.dto.response.CoinResponse;
 import ru.lapotko.coingoal.application.rest.mapper.RestMapper;
+import ru.lapotko.coingoal.core.filtration.StringFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.Coin;
 import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinJpaFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
 @RestController
@@ -32,12 +33,15 @@ public class CoinController {
             String symbol,
             @PageableDefault(direction = Sort.Direction.ASC)
             Pageable pageable) {
-        CoinFilter filter = CoinFilter.builder()
-                .name(name)
-                .symbol(symbol)
-                .build();
         PageInfo<Coin> coins = coinDomainRepository.findAll(
-                ConvertUtil.convertToCoinFilterInfo(filter),
+                new CoinJpaFilter(
+                        StringFilterInfo.builder()
+                                .cont(name)
+                                .build(),
+                        StringFilterInfo.builder()
+                                .eq(symbol)
+                                .build()
+                ),
                 ConvertUtil.convertToPageableInfo(pageable));
         return ResponseEntity.ok(ConvertUtil.convertToPage(coins, pageable).map(RestMapper::toCoinResponse));
     }

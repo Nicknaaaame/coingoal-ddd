@@ -2,7 +2,7 @@ package ru.lapotko.coingoal.core.position.service;
 
 import lombok.RequiredArgsConstructor;
 import ru.lapotko.coingoal.core.exception.PositionNotFoundException;
-import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
+import ru.lapotko.coingoal.core.filtration.PositionDomainFilter;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.Goal;
@@ -33,8 +33,8 @@ public class PositionDomainService {
         return positionAggregate;
     }
 
-    public PageInfo<PositionAggregate> getPositionPage(PositionFilterInfo filterInfo, PageableInfo pageableInfo) {
-        return positionDomainRepository.findAll(filterInfo, pageableInfo);
+    public PageInfo<PositionAggregate> getPositionPage(PositionDomainFilter filter, PageableInfo pageableInfo) {
+        return positionDomainRepository.findAll(filter, pageableInfo);
     }
 
     public PositionAggregate getPosition(Long positionId) {

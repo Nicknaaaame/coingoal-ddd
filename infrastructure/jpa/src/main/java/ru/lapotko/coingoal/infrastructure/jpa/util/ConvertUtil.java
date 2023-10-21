@@ -1,13 +1,9 @@
 package ru.lapotko.coingoal.infrastructure.jpa.util;
 
 import org.springframework.data.domain.*;
-import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
-import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.*;
 import ru.lapotko.coingoal.infrastructure.jpa.dto.CoinDto;
 import ru.lapotko.coingoal.infrastructure.jpa.entity.CoinEntity;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,20 +55,6 @@ public class ConvertUtil {
         return Sort.Direction.DESC;
     }
 
-    public static CoinFilter convertToCoinFilter(CoinFilterInfo filterInfo) {
-        return CoinFilter.builder()
-                .name(filterInfo.getName())
-                .symbol(filterInfo.getSymbol())
-                .build();
-    }
-
-    public static CoinFilterInfo convertToCoinFilterInfo(CoinFilter filter) {
-        return CoinFilterInfo.builder()
-                .name(filter.getName())
-                .symbol(filter.getSymbol())
-                .build();
-    }
-
     public static CoinEntity convertToCoinEntity(CoinDto coinDto) {
         return new CoinEntity(
                 null,
@@ -83,15 +65,4 @@ public class ConvertUtil {
         );
     }
 
-    public static PositionFilter convertToPositionFilter(PositionFilterInfo filterInfo) {
-        return PositionFilter.builder()
-                .coinFilter(convertToCoinFilter(filterInfo.getCoinFilter()))
-                .build();
-    }
-
-    public static PositionFilterInfo convertToPositionFilter(PositionFilter filter) {
-        return PositionFilterInfo.builder()
-                .coinFilter(convertToCoinFilterInfo(filter.getCoinFilter()))
-                .build();
-    }
 }

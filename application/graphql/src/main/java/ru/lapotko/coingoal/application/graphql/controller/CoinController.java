@@ -8,16 +8,14 @@ import ru.lapotko.coingoal.application.graphql.mapper.GraphQlMapper;
 import ru.lapotko.coingoal.application.graphql.types.CoinFilterInput;
 import ru.lapotko.coingoal.application.graphql.types.CoinGql;
 import ru.lapotko.coingoal.application.graphql.types.CoinSortInput;
-import ru.lapotko.coingoal.application.graphql.types.SortDirection;
-import ru.lapotko.coingoal.core.filtration.CoinFilterInfo;
-import ru.lapotko.coingoal.core.pagination.OrderInfo;
+import ru.lapotko.coingoal.core.filtration.CoinDomainFilter;
+import ru.lapotko.coingoal.core.filtration.StringFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
-import ru.lapotko.coingoal.core.pagination.SortDirectionInfo;
 import ru.lapotko.coingoal.core.pagination.SortInfo;
 import ru.lapotko.coingoal.core.position.repository.CoinDomainRepository;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinJpaFilter;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,21 +29,22 @@ public class CoinController {
             @Argument List<CoinSortInput> sort,
             @Argument Integer page,
             @Argument Integer size) {
-        return coinDomainRepository.findAll(
-                        CoinFilterInfo.builder()
-                                .name(filter.getName())
-                                .symbol(filter.getSymbol())
-                                .build(),
-                        PageableInfo.of(
-                                page,
-                                size,
-                                SortInfo.of(sort.stream()
-                                        .map(coinSortInput -> new OrderInfo(
-                                                coinSortInput.getField().name().toLowerCase(Locale.ROOT),
-                                                coinSortInput.getDirection().equals(SortDirection.ASC)
-                                                        ? SortDirectionInfo.ASC
-                                                        : SortDirectionInfo.DESC))
-                                        .collect(Collectors.toList()))))
+        CoinDomainFilter domainFilter = new CoinJpaFilter(
+                StringFilterInfo.builder()
+                        .cont(filter.getName().getCont())
+                        .eq(filter.getName().getEq())
+                        .build(),
+                StringFilterInfo.builder()
+                        .cont(filter.getSymbol().getCont())
+                        .eq(filter.getSymbol().getEq())
+                        .build());
+        PageableInfo pageable = PageableInfo.of(
+                page,
+                size,
+                SortInfo.of(sort.stream()
+                        .map(GraphQlMapper::toOrderInfo)
+                        .collect(Collectors.toList())));
+        return coinDomainRepository.findAll(domainFilter, pageable)
                 .getContent().stream()
                 .map(GraphQlMapper::toCoinGql)
                 .collect(Collectors.toList());

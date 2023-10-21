@@ -7,13 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.lapotko.coingoal.application.rest.dto.response.PositionResponse;
 import ru.lapotko.coingoal.application.rest.mapper.RestMapper;
+import ru.lapotko.coingoal.core.filtration.StringFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
 import ru.lapotko.coingoal.core.position.request.GoalRequest;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinFilter;
-import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.CoinJpaFilter;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionJpaFilter;
 import ru.lapotko.coingoal.infrastructure.jpa.service.PositionApplicationService;
 import ru.lapotko.coingoal.infrastructure.jpa.util.ConvertUtil;
 
@@ -32,14 +33,15 @@ public class PositionController {
             @RequestParam(name = "coin_symbol", required = false)
             String coinSymbol,
             Pageable pageable) {
-        PositionFilter filter = PositionFilter.builder()
-                .coinFilter(CoinFilter.builder()
-                        .name(coinName)
-                        .symbol(coinSymbol)
-                        .build())
-                .build();
         PageInfo<PositionAggregate> positionPageInfo = positionService.getPositionPage(
-                ConvertUtil.convertToPositionFilter(filter),
+                new PositionJpaFilter(new CoinJpaFilter(
+                        StringFilterInfo.builder()
+                                .cont(coinName)
+                                .build(),
+                        StringFilterInfo.builder()
+                                .eq(coinSymbol)
+                                .build()
+                )),
                 ConvertUtil.convertToPageableInfo(pageable));
         Page<PositionAggregate> positionPage = ConvertUtil.convertToPage(positionPageInfo, pageable);
         return ResponseEntity.ok(positionPage.map(RestMapper::toPositionResponse));

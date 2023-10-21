@@ -10,7 +10,5 @@ public record CoinSymbol(String symbol) {
             throw new DomainValidationException("Coin symbol cannot be null");
         if (symbol.trim().isEmpty())
             throw new DomainValidationException("Coin symbol cannot be empty");
-        if (!symbol.toUpperCase(Locale.ROOT).equals(symbol))
-            throw new DomainValidationException("Symbol should be with upper case");
     }
 }

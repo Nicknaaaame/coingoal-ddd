@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lapotko.coingoal.core.filtration.PositionFilterInfo;
 import ru.lapotko.coingoal.core.pagination.PageInfo;
 import ru.lapotko.coingoal.core.pagination.PageableInfo;
 import ru.lapotko.coingoal.core.position.PositionAggregate;
@@ -12,6 +11,7 @@ import ru.lapotko.coingoal.core.position.request.GoalRequest;
 import ru.lapotko.coingoal.core.position.request.PositionCreate;
 import ru.lapotko.coingoal.core.position.request.PositionUpdate;
 import ru.lapotko.coingoal.core.position.service.PositionDomainService;
+import ru.lapotko.coingoal.infrastructure.jpa.filter.PositionJpaFilter;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +29,8 @@ public class PositionApplicationService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public PageInfo<PositionAggregate> getPositionPage(PositionFilterInfo filterInfo, PageableInfo pageableInfo) {
-        return positionDomainService.getPositionPage(filterInfo, pageableInfo);
+    public PageInfo<PositionAggregate> getPositionPage(PositionJpaFilter filter, PageableInfo pageableInfo) {
+        return positionDomainService.getPositionPage(filter, pageableInfo);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)

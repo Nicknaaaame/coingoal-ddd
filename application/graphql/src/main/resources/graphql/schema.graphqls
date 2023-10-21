@@ -27,8 +27,8 @@ type CoinGql {
 }
 
 input CoinFilterInput {
-  name: String
-  symbol: String
+  name: StringFilter = {}
+  symbol: StringFilter = {}
 }
 
 input CoinSortInput {
@@ -44,4 +44,9 @@ enum CoinSortField {
 enum SortDirection {
   ASC
   DESC
+}
+
+input StringFilter {
+  eq: String
+  cont: String
 }
